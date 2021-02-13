@@ -66,7 +66,7 @@ function onMessageHandler (target, context, msg, self) {
 
 // Called every time the bot connects to Twitch chat
 function onConnectedHandler (addr, port) {
-    max.post(`* Connected to ${addr}:${port}`);
+    max.outlet(`twitchMessage Connected to ${addr}:${port}`);
 }
 
 // Called when a user joins or parts the channel
