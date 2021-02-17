@@ -52,8 +52,9 @@ exports.parse = function(inputMessage, tonalCenter = 48.0) {
 /*
  parse !m - Decodes a melody
     input message format:
-        "!m <u/d>-<interval>-<dur> <u/d>-<interval>-<dur> <u/d>-<interval>-<dur>..."
+        "!m<seq#> <u/d>-<interval>-<dur> <u/d>-<interval>-<dur> <u/d>-<interval>-<dur>..."
             !m          = (constant) allows the Twitch bot to recognize this as a melody
+            <seq#>      = the sequencer to the send melody
             <u/d>       = ("u" | "d") up or down; the direction the note will travel
             <interval>  = the amount of half steps the note will travel; this
                             number must not exceed the bounds of the midi chart.
@@ -79,15 +80,15 @@ exports.parse = function(inputMessage, tonalCenter = 48.0) {
                                 quarter note triplet = 0.666
                                 eight note triplet   = 0.333
 
-        Example (major scale in whole notes):
-            "!m u-0-4 u-2-4 u-2-4 u-1-4 u-2-4 u-2-4 u-2-4 u-1-4"
+        Example (major scale in whole notes intended for sequencer number one):
+            "!m1 u-0-4 u-2-4 u-2-4 u-1-4 u-2-4 u-2-4 u-2-4 u-1-4"
 
         Example (Laura's melody):
-            "!m u-10-0.333 d-6-0.333 d-4-0.333 u-10-0.666 d-3-0.666 u-8-0.666 u-9-2 d-5-2 d-3-4"
+            "!m1 u-10-0.333 d-6-0.333 d-4-0.333 u-10-0.666 d-3-0.666 u-8-0.666 u-9-2 d-5-2 d-3-4"
 
     output message format:
-        "noteData <note> <vel> <dur>"
-        "noteData 61 127 4, noteQty 1"
+        "noteData <seq#> <note> <vel> <dur>"
+        "noteData 1 61 127 4, noteQty 1 1"
 
     returns:
         multiple output messages in an array
@@ -95,11 +96,27 @@ exports.parse = function(inputMessage, tonalCenter = 48.0) {
 function parseMelody(inputMessage, tonalCenter){
     let outputMessage = []; // the Max formatted output array
     let melody = []; // the melody array
+    let typeRegex = /^![a-zA-Z]+/;
+    let numberRegex = /^\d+/;
+    let numberSpaceRegex = /^\d+\s/;
 
-    let slicedMessage = inputMessage.slice(3); // remove messageType
+    // remove messageType
+    let strippedMessage = inputMessage.replace(typeRegex, '');
+
+    // find which melody seq. number
+    let sequencerNumberArr = strippedMessage.match(numberRegex);
+
+    if (!sequencerNumberArr) {
+        // error if no number is found
+        outputMessage.push("errorMessage '!m: missing melody sequencer number'");
+        return outputMessage;
+    }
+
+    // strip out number and first space
+    strippedMessage = strippedMessage.replace(numberSpaceRegex, '');
 
     // parse the incoming message
-    let messageArray = slicedMessage.split(" "); // get individual notes
+    let messageArray = strippedMessage.split(" "); // get individual notes
 
     let index = 0; // for note id
 
@@ -163,6 +180,7 @@ function parseMelody(inputMessage, tonalCenter){
     for(let line of melody){
         outputMessage.push(
             "noteData " +
+            sequencerNumberArr[0] + " " +
             line.index + " " +
             line.pitch + " " +
             line.velocity + " " +
@@ -173,10 +191,10 @@ function parseMelody(inputMessage, tonalCenter){
     }
 
     // output number of notes to be played
-    outputMessage.push("noteQty " + melody.length);
+    outputMessage.push("noteQty " + sequencerNumberArr[0] + " " + melody.length);
 
     // output the original message for the dashboard
-    outputMessage.push("userMelody " + inputMessage);
+    outputMessage.push("userMelody " + sequencerNumberArr[0] + " " + inputMessage);
 
     // return all of the messages in an array
     return outputMessage;
