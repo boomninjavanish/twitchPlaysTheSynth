@@ -50,6 +50,48 @@ exports.parse = function(inputMessage, tonalCenter = 48.0) {
 }
 
 /*
+ parseSequencerNumber - determines the sequencer number and strips the message identifier
+    from the message.
+
+ inputMessage: the message given by the user; must have a message identifier that contains
+    an exclamation point followed by an alphabetic identifier followed by a number. Examples:
+        !m2 or !bongo12 or !c4
+
+  returns: the input message that has been stripped of the message identifier and the
+    number that indicates which sequencer the message is destined to receive; if
+    the sequencer number cannot be found, return NaN
+ */
+function parseSequencerNumber(inputMessage){
+    let typeRegex = /^![a-zA-Z]+/;
+    let numberRegex = /^\d+/;
+    let numberSpaceRegex = /^\d+\s/;
+    let sequencerNumber;
+
+    // remove messageType
+    let strippedMessage = inputMessage.replace(typeRegex, '');
+
+    // find which melody seq. number
+    let sequencerNumberArr = strippedMessage.match(numberRegex);
+
+    // set to not a number to indicate error
+    if (!sequencerNumberArr) {
+        return {
+            strippedMessage: null,
+            sequencerNumber: NaN
+        }
+    }
+    sequencerNumber = sequencerNumberArr[0];
+
+    // strip out number and first space
+    strippedMessage = strippedMessage.replace(numberSpaceRegex, '');
+
+    return {
+        strippedMessage: strippedMessage,
+        sequencerNumber: parseInt(sequencerNumber)
+    }
+}
+
+/*
  parse !m - Decodes a melody
     input message format:
         "!m<seq#> <u/d>-<interval>-<dur> <u/d>-<interval>-<dur> <u/d>-<interval>-<dur>..."
@@ -96,24 +138,18 @@ exports.parse = function(inputMessage, tonalCenter = 48.0) {
 function parseMelody(inputMessage, tonalCenter){
     let outputMessage = []; // the Max formatted output array
     let melody = []; // the melody array
-    let typeRegex = /^![a-zA-Z]+/;
-    let numberRegex = /^\d+/;
-    let numberSpaceRegex = /^\d+\s/;
 
-    // remove messageType
-    let strippedMessage = inputMessage.replace(typeRegex, '');
+    // get sequencer number and strip identifier
+    let parsedSequenceNumber = parseSequencerNumber(inputMessage);
 
-    // find which melody seq. number
-    let sequencerNumberArr = strippedMessage.match(numberRegex);
-
-    if (!sequencerNumberArr) {
-        // error if no number is found
+    // error if no number is found
+    if(isNaN(parsedSequenceNumber.sequencerNumber)){
         outputMessage.push("errorMessage '!m: missing melody sequencer number'");
         return outputMessage;
     }
 
-    // strip out number and first space
-    strippedMessage = strippedMessage.replace(numberSpaceRegex, '');
+    let seqNumber = parsedSequenceNumber.sequencerNumber;
+    let strippedMessage = parsedSequenceNumber.strippedMessage;
 
     // parse the incoming message
     let messageArray = strippedMessage.split(" "); // get individual notes
@@ -180,7 +216,7 @@ function parseMelody(inputMessage, tonalCenter){
     for(let line of melody){
         outputMessage.push(
             "noteData " +
-            sequencerNumberArr[0] + " " +
+            seqNumber + " " +
             line.index + " " +
             line.pitch + " " +
             line.velocity + " " +
@@ -191,10 +227,10 @@ function parseMelody(inputMessage, tonalCenter){
     }
 
     // output number of notes to be played
-    outputMessage.push("noteQty " + sequencerNumberArr[0] + " " + melody.length);
+    outputMessage.push("noteQty " + seqNumber + " " + melody.length);
 
     // output the original message for the dashboard
-    outputMessage.push("userMelody " + sequencerNumberArr[0] + " " + inputMessage);
+    outputMessage.push("userMelody " + seqNumber + " " + inputMessage);
 
     // return all of the messages in an array
     return outputMessage;
