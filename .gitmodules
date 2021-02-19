@@ -1,0 +1,3 @@
+[submodule "maxForLive/randomMaxAbstractions"]
+	path = maxForLive/randomMaxAbstractions
+	url = git@github.com:boomninjavanish/randomMaxAbstractions.git
