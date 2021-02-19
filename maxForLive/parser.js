@@ -248,8 +248,8 @@ function parseMelody(inputMessage, tonalCenter){
             "!c 8"
 
     output message format:
-        "tonalOffset <amount>"
-        "tonalOffset 8"
+        "tonalOffset <seq #> <amount>"
+        "tonalOffset 1 8"
 
     returns:
         single output message in an array
