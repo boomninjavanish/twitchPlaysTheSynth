@@ -14,30 +14,44 @@ exports.parse = function(inputMessage, tonalCenter = 48.0) {
 
     // find which message is being parsed
     let outputMessage = []; // the Max formatted output
+    let typeRegex = /^![a-zA-Z]+/;
+    let matches = inputMessage.match(typeRegex);
 
-    if(inputMessage.startsWith("!m"))
+    if(matches[0] === "!m")
         outputMessage = parseMelody(inputMessage, tonalCenter);
 
-    else if(inputMessage.startsWith("!c"))
+    else if(matches[0] === "!c")
         outputMessage = parseTonalOffset(inputMessage);
 
-    else if(inputMessage.startsWith("!f"))
+    else if(matches[0] === "!f")
         outputMessage = parseFilterFreq(inputMessage);
 
-    else if(inputMessage.startsWith("!r"))
+    else if(matches[0] === "!r")
         outputMessage = parseResonance(inputMessage);
 
-    else if(inputMessage.startsWith("!t"))
+    else if(matches[0] === "!t")
         outputMessage = parseTempo(inputMessage);
 
-    else if(inputMessage.startsWith("!s"))
+    else if(matches[0] === "!s")
         outputMessage = parseSlew(inputMessage);
 
-    else if(inputMessage.startsWith("!y"))
+    else if(matches[0] === "!y")
         outputMessage = parseFmAmount(inputMessage);
 
-    else if(inputMessage.startsWith("!l"))
+    else if(matches[0] === "!l")
         outputMessage = parseLfo(inputMessage);
+
+    else if(matches[0] === "!mario")
+        outputMessage = parseMario(inputMessage);
+
+    else if(matches[0] === "!luigi")
+        outputMessage = parseLuigi(inputMessage);
+
+    else if(matches[0] === "!yoshi")
+        outputMessage = parseYoshi(inputMessage);
+
+    else if(matches[0] === "!peach")
+        outputMessage = parsePeach(inputMessage);
 
     else{
         // incorrect command; make error and return
@@ -257,12 +271,23 @@ function parseMelody(inputMessage, tonalCenter){
 function parseTonalOffset(inputMessage){
     let outputMessage = []; // the Max formatted output array
 
+    // get sequencer number and strip identifier
+    let parsedSequenceNumber = parseSequencerNumber(inputMessage);
+
+    // error if no number is found
+    if(isNaN(parsedSequenceNumber.sequencerNumber)){
+        outputMessage.push("errorMessage '!c: missing melody sequencer number. For example, use !c2 1 " +
+            "to move sequencer number 2 up a step.'");
+        return outputMessage;
+    }
+
+    let seqNumber = parsedSequenceNumber.sequencerNumber;
+    let strippedMessage = parsedSequenceNumber.strippedMessage;
+
     inputMessage = inputMessage.slice(3); // remove messageType
 
-    let outputNumber = parseFloat(inputMessage);
-
     // does the tonal center have invalid characters?
-    for(let character of inputMessage){
+    for(let character of strippedMessage){
         if( !(character === '-' || character === '.' || /^\d$/.test(character)) ){
             // make error and return
             outputMessage.push("errorMessage '!c: " + inputMessage + " is not a valid tonal center change'");
@@ -271,7 +296,7 @@ function parseTonalOffset(inputMessage){
     }
 
     // return message in an array
-    outputMessage.push("tonalOffset " + inputMessage);
+    outputMessage.push("tonalOffset " + seqNumber + " " + strippedMessage);
     return outputMessage;
 }
 
@@ -316,7 +341,6 @@ function parseFilterFreq(inputMessage){
         single output message in an array
 */
 function parseResonance(inputMessage){
-
     return parseTwoParameters(inputMessage, "!r", "resonance");
 
 }
@@ -422,6 +446,106 @@ function parseLfo(inputMessage){
 }
 
 /*
+ parse !mario - Decodes a request to change any parameter mapped to it
+    input message format:
+        "!mario <amount>-<beats>"
+            !mario      = (constant) allows the Twitch bot to recognize this as parameter change
+            <amount>    = 0-127; the rate of the LFO; 0 = slow, 127 = fast
+            <beats>     = beats; how many quarter notes to for the change to take place; 0 = immediately
+
+        Example (change the parameter rate to 23 over 10 beats):
+        "!mario 23-10"
+
+    output message format:
+        "mario <amount> <beats>"
+        "mario 23 10"
+
+    returns:
+        single output message in an array
+
+ */
+function parseMario(inputMessage){
+
+    return parseTwoParameters(inputMessage, "!mario", "mario", 0, 127);
+
+}
+
+/*
+ parse !luigi - Decodes a request to change any parameter mapped to it
+    input message format:
+        "!luigi <amount>-<beats>"
+            !luigi      = (constant) allows the Twitch bot to recognize this as parameter change
+            <amount>    = 0-127; the rate of the LFO; 0 = slow, 127 = fast
+            <beats>     = beats; how many quarter notes to for the change to take place; 0 = immediately
+
+        Example (change the parameter rate to 23 over 10 beats):
+        "!luigi 23-10"
+
+    output message format:
+        "luigi <amount> <beats>"
+        "luigi 23 10"
+
+    returns:
+        single output message in an array
+
+ */
+function parseLuigi(inputMessage){
+
+    return parseTwoParameters(inputMessage, "!luigi", "luigi", 0, 127);
+
+}
+
+/*
+ parse !yoshi - Decodes a request to change any parameter mapped to it
+    input message format:
+        "!yoshi <amount>-<beats>"
+            !yoshi      = (constant) allows the Twitch bot to recognize this as parameter change
+            <amount>    = 0-127; the rate of the LFO; 0 = slow, 127 = fast
+            <beats>     = beats; how many quarter notes to for the change to take place; 0 = immediately
+
+        Example (change the parameter rate to 23 over 10 beats):
+        "!yoshi 23-10"
+
+    output message format:
+        "yoshi <amount> <beats>"
+        "yoshi 23 10"
+
+    returns:
+        single output message in an array
+
+ */
+function parseYoshi(inputMessage){
+
+    return parseTwoParameters(inputMessage, "!yoshi", "yoshi", 0, 127);
+
+}
+
+/*
+ parse !peach - Decodes a request to change any parameter mapped to it
+    input message format:
+        "!peach <amount>-<beats>"
+            !peach      = (constant) allows the Twitch bot to recognize this as parameter change
+            <amount>    = 0-127; the rate of the LFO; 0 = slow, 127 = fast
+            <beats>     = beats; how many quarter notes to for the change to take place; 0 = immediately
+
+        Example (change the parameter rate to 23 over 10 beats):
+        "!peach 23-10"
+
+    output message format:
+        "peach <amount> <beats>"
+        "peach 23 10"
+
+    returns:
+        single output message in an array
+
+ */
+function parsePeach(inputMessage){
+
+    return parseTwoParameters(inputMessage, "!peach", "peach", 0, 127);
+
+}
+
+/*
  parse two parameters - parses a input key followed by two numeric parameters; one for the amount of change
     the other for the duration in beats for the change to glide towards in a linear ramp
 
@@ -456,17 +580,35 @@ function parseLfo(inputMessage){
 function parseTwoParameters(inputMessage, inputKey, outputKey, min = 0, max = 127){
     let outputMessage = []; // the Max formatted output array
 
-    inputMessage = inputMessage.slice(3); // remove messageType
-    let commands = inputMessage.split("-"); // grab the commands
+    // get sequencer number and strip identifier
+    let parsedSequenceNumber = parseSequencerNumber(inputMessage);
+
+    // error if no number is found
+    if(isNaN(parsedSequenceNumber.sequencerNumber)){
+        outputMessage.push("errorMessage '" + inputKey +
+            ": missing melody sequencer number. For example, use " + inputKey + "2 63-4 " +
+            "to change the parameter for sequencer number 2 to 63 over 4 beats.'");
+        return outputMessage;
+    }
+
+    let seqNumber = parsedSequenceNumber.sequencerNumber;
+    let strippedMessage = parsedSequenceNumber.strippedMessage;
+
+    let commands = strippedMessage.split("-"); // grab the commands
+
+    // temp -------------> delete
+    //outputMessage.push("errorMessage strippedMessage = '" + strippedMessage + "' commands = '" + commands +
+    //    "'commands.length = '" + commands.length + "'");
+   // return outputMessage;
 
     // check for requisite number of commands and correct data type
     if(commands.length === 2){
         // does the message have invalid characters?
-        for(let character of inputMessage){
+        for(let character of strippedMessage){
             if( !(character === "-" || character === '.' || /^\d$/.test(character)) ){
                 // make error and return
-                outputMessage.push("errorMessage '" + inputKey + ": " +
-                    inputMessage + " is not a valid message'");
+                outputMessage.push("errorMessage '" + inputKey + seqNumber + ": " +
+                    strippedMessage + " is not a valid message'");
                 return outputMessage;
             }
         }
@@ -497,8 +639,8 @@ function parseTwoParameters(inputMessage, inputKey, outputKey, min = 0, max = 12
             return outputMessage;
         }
 
-        // if all tests pass, send the filter changes
-        outputMessage.push(outputKey + " " + amount + " " + beats);
+        // if all tests pass, send the parameter changes
+        outputMessage.push(outputKey + " " + seqNumber + " " + amount + " " + beats);
         return outputMessage;
     }
     else {
