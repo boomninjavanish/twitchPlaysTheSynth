@@ -4,7 +4,7 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 1,
-			"revision" : 8,
+			"revision" : 10,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
@@ -47,7 +47,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 356.0, 490.5, 112.0, 37.0 ],
-					"presentation_linecount" : 2,
 					"text" : "value output (int; 0-127)"
 				}
 
@@ -121,7 +120,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 401.0, 201.5, 112.0, 37.0 ],
-					"presentation_linecount" : 2,
 					"text" : "this sequencer number (int)"
 				}
 
@@ -247,14 +245,7 @@
 
 			}
  ],
-		"dependency_cache" : [ 			{
-				"name" : "dunlap.changeOverBeats.maxpat",
-				"bootpath" : "~/Documents/GitHub/randomMaxAbstractions",
-				"patcherrelativepath" : "../../randomMaxAbstractions",
-				"type" : "JSON",
-				"implicit" : 1
-			}
- ],
+		"dependency_cache" : [  ],
 		"autosave" : 0
 	}
 

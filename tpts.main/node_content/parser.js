@@ -1,5 +1,5 @@
 /*
-    parser.parse(message, tonalCenter, bpmillis);
+    parser.parse(message, tonalCenter);
     (c) 2020 Matthew Dunlap
 
         Decodes messages sent to a Twitch Bot that control parameters on a modular synth
@@ -579,27 +579,28 @@ function parsePeach(inputMessage){
 */
 function parseTwoParameters(inputMessage, inputKey, outputKey, min = 0, max = 127){
     let outputMessage = []; // the Max formatted output array
+    let seqNumber = 0;
+    let strippedMessage = "";
 
-    // get sequencer number and strip identifier
-    let parsedSequenceNumber = parseSequencerNumber(inputMessage);
+    if(inputKey === "!t"){
+        // if tempo change, only strip out the identifier
+        strippedMessage = inputMessage.replace(/^!\w+\s/, "");
+    } else {
+        // if not a tempo change, get sequencer number and strip identifier
+        let parsedSequenceNumber = parseSequencerNumber(inputMessage);
 
-    // error if no number is found
-    if(isNaN(parsedSequenceNumber.sequencerNumber)){
-        outputMessage.push("errorMessage '" + inputKey +
-            ": missing melody sequencer number. For example, use " + inputKey + "2 63-4 " +
-            "to change the parameter for sequencer number 2 to 63 over 4 beats.'");
-        return outputMessage;
+        if(isNaN(parsedSequenceNumber.sequencerNumber)){
+            outputMessage.push("errorMessage '" + inputKey +
+                ": missing melody sequencer number. For example, use " + inputKey + "2 63-4 " +
+                "to change the parameter for sequencer number 2 to 63 over 4 beats.'");
+            return outputMessage;
+        }
+        seqNumber = parsedSequenceNumber.sequencerNumber;
+        strippedMessage = parsedSequenceNumber.strippedMessage;
     }
 
-    let seqNumber = parsedSequenceNumber.sequencerNumber;
-    let strippedMessage = parsedSequenceNumber.strippedMessage;
-
-    let commands = strippedMessage.split("-"); // grab the commands
-
-    // temp -------------> delete
-    //outputMessage.push("errorMessage strippedMessage = '" + strippedMessage + "' commands = '" + commands +
-    //    "'commands.length = '" + commands.length + "'");
-   // return outputMessage;
+    // grab the separate commands
+    let commands = strippedMessage.split("-");
 
     // check for requisite number of commands and correct data type
     if(commands.length === 2){
@@ -640,7 +641,13 @@ function parseTwoParameters(inputMessage, inputKey, outputKey, min = 0, max = 12
         }
 
         // if all tests pass, send the parameter changes
-        outputMessage.push(outputKey + " " + seqNumber + " " + amount + " " + beats);
+        // do not send seq. number if changing the tempo
+        if(inputKey === "!t"){
+            outputMessage.push(outputKey + " " + amount + " " + beats);
+        } else {
+            outputMessage.push(outputKey + " " + seqNumber + " " + amount + " " + beats);
+        }
+
         return outputMessage;
     }
     else {

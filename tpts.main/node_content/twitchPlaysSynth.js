@@ -10,7 +10,7 @@
 const parser = require('./parser');
 
 // contains the login information for the tmi.client
-const creds = require('./creds');
+//const creds = require('./creds');
 
 // https://docs.cycling74.com/nodeformax/api/module-max-api.html
 const max = require('max-api');
@@ -30,6 +30,9 @@ twitchApiOptions = {
     channels: [ "" ]
 };
 
+// tell us the node version
+max.post(`Node version: ${process.version}`);
+
 // create Twitch client
 const client = new tmi.client();
 
@@ -39,6 +42,7 @@ client.on('message', onMessageHandler);
 // Called every time a message comes in
 function onMessageHandler (target, context, msg, self) {
     //if (self) { return; } // Ignore messages from the bot
+    console.log("onMessageHandler start!");
 
     // Remove whitespace from chat message
     const commandName = msg.trim();
@@ -52,7 +56,8 @@ function onMessageHandler (target, context, msg, self) {
 
         // catch error messages then tell the user
         if(outputMessage[0].slice(0, 12) === "errorMessage"){
-            client.say(target, "Error --> " + outputMessage[0].slice(13));
+            // todo: find out why the following line crashes everything
+            //client.say(target, "Error --> " + outputMessage[0].slice(13));
         }
 
         // output all parsed Max messages in returned array
@@ -137,7 +142,6 @@ max.addHandler("twitchSettings", (inputMessage) => {
 
 // parse messages sent from the inlet (for testing commands)
 max.addHandler("input", (inputMessage) => {
-
     // parse through command parser if prepended with "input"
     let outputMessage = parser.parse(inputMessage);
 
