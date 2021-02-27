@@ -30,6 +30,9 @@ twitchApiOptions = {
     channels: [ "" ]
 };
 
+// for making mappers
+let mapperNames = new Array();
+
 // tell us the node version
 max.post(`Node version: ${process.version}`);
 
@@ -57,6 +60,7 @@ function onMessageHandler (target, context, msg, self) {
         // catch error messages then tell the user
         if(outputMessage[0].slice(0, 12) === "errorMessage"){
             // todo: find out why the following line crashes everything
+            // change to whisper
             //client.say(target, "Error --> " + outputMessage[0].slice(13));
         }
 
@@ -148,5 +152,26 @@ max.addHandler("input", (inputMessage) => {
     // output all parsed Max messages in returned array
     for(let line of outputMessage){
         max.outlet(line);
+    }
+});
+
+// todo: make test for mapperNames --> if none match send error to user --> if match, parse to mapper device
+
+// register new mapper names
+max.addHandler("mapperName", (mapperName) => {
+    // do not register if already there
+    if(!mapperNames.includes(mapperName)){
+        mapperName.push(mapperName);
+    }
+});
+
+// deletes mapper names
+max.addHandler("deleteMapperName", (mapperName) => {
+    // find it
+    let indexToDelete = mapperNames.indexOf(mapperName);
+
+    // if found, delete
+    if(indexToDelete > -1){
+        mapperNames.splice(indexToDelete);
     }
 });
