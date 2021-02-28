@@ -41,6 +41,32 @@
 		"boxes" : [ 			{
 				"box" : 				{
 					"bubble" : 1,
+					"id" : "obj-10",
+					"linecount" : 2,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 834.0, 37.5, 183.0, 37.0 ],
+					"text" : "reload mapperNames into tpts script (bang)"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"comment" : "reload mapperNames into tpts script (bang)",
+					"id" : "obj-4",
+					"index" : 0,
+					"maxclass" : "inlet",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 798.375, 41.0, 30.0, 30.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"bubble" : 1,
 					"bubbleside" : 3,
 					"id" : "obj-62",
 					"linecount" : 3,
@@ -48,7 +74,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 556.0, 421.599976000000197, 145.0, 51.0 ],
-					"presentation_linecount" : 4,
 					"text" : "set the textBox with the replacement command"
 				}
 
@@ -63,7 +88,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 334.0, 353.099976000000197, 148.0, 51.0 ],
-					"presentation_linecount" : 5,
 					"text" : "remove exclamation points from command and concatenate"
 				}
 
@@ -73,13 +97,12 @@
 					"bubble" : 1,
 					"bubbleside" : 3,
 					"id" : "obj-59",
-					"linecount" : 4,
+					"linecount" : 5,
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 645.0, 314.599976000000197, 145.0, 64.0 ],
-					"presentation_linecount" : 4,
-					"text" : "remove spaces and exclamation points from command and concatenate"
+					"patching_rect" : [ 648.0, 307.599976000000197, 145.0, 78.0 ],
+					"text" : "remove spaces, exclamation points, and reserved names from command and concatenate"
 				}
 
 			}
@@ -90,8 +113,8 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 822.375, 134.0, 83.0, 22.0 ],
-					"text" : "r ---backToTxt"
+					"patching_rect" : [ 822.375, 134.0, 91.0, 22.0 ],
+					"text" : "r #0_backToTxt"
 				}
 
 			}
@@ -101,8 +124,8 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 703.0, 474.599976000000197, 85.0, 22.0 ],
-					"text" : "s ---backToTxt"
+					"patching_rect" : [ 703.0, 474.599976000000197, 93.0, 22.0 ],
+					"text" : "s #0_backToTxt"
 				}
 
 			}
@@ -125,8 +148,8 @@
 					"numinlets" : 1,
 					"numoutlets" : 5,
 					"outlettype" : [ "", "", "", "", "" ],
-					"patching_rect" : [ 798.375, 335.599976000000197, 155.0, 22.0 ],
-					"text" : "regexp \\\\s|! @substitute %0"
+					"patching_rect" : [ 798.375, 335.599976000000197, 181.0, 22.0 ],
+					"text" : "regexp \\\\s|!|^m$ @substitute %0"
 				}
 
 			}
@@ -139,7 +162,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 1051.5, 279.5, 210.0, 37.0 ],
-					"presentation_linecount" : 6,
 					"text" : "send \"deleteMapperName\" before \"mapperName\" command"
 				}
 
@@ -152,8 +174,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 1093.0, 559.099976000000197, 100.0, 51.0 ],
-					"presentation_linecount" : 3,
+					"patching_rect" : [ 1093.0, 559.099976000000197, 103.0, 51.0 ],
 					"text" : "don't delete when text box was empty"
 				}
 
@@ -168,7 +189,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 625.0, 514.099976000000197, 173.0, 51.0 ],
-					"presentation_linecount" : 6,
 					"text" : "prevent \"bang\" from becoming a mapperName in the script"
 				}
 
@@ -229,7 +249,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 1025.0, 507.0, 114.0, 22.0 ],
-					"text" : "oinornnishfhoe"
+					"text" : "bang"
 				}
 
 			}
@@ -241,8 +261,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 858.375, 177.5, 245.0, 78.0 ],
-					"presentation_linecount" : 9,
+					"patching_rect" : [ 858.375, 177.5, 247.0, 78.0 ],
 					"text" : "the node.js script contains a registry of mapper names; entering into this box will cause the mapper to be registered; when removed or changed within the textbox, the prior mapper will be deregistered"
 				}
 
@@ -438,7 +457,6 @@
 					"fontsize" : 9.5,
 					"id" : "obj-1",
 					"keymode" : 1,
-					"linecount" : 2,
 					"maxclass" : "textedit",
 					"numinlets" : 1,
 					"numoutlets" : 4,
@@ -457,7 +475,6 @@
 
 					}
 ,
-					"text" : "oinornnishfhoe",
 					"varname" : "textedit"
 				}
 
@@ -1524,6 +1541,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-35", 0 ],
+					"source" : [ "obj-4", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-6", 0 ],
 					"source" : [ "obj-5", 0 ]
 				}
@@ -1532,7 +1556,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-23", 1 ],
-					"midpoints" : [ 909.875, 431.799988000000099, 1129.5, 431.799988000000099 ],
+					"midpoints" : [ 929.375, 431.799988000000099, 1129.5, 431.799988000000099 ],
 					"order" : 0,
 					"source" : [ "obj-53", 3 ]
 				}
@@ -1550,7 +1574,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-36", 0 ],
-					"midpoints" : [ 909.875, 502.599976000000197, 807.875, 502.599976000000197 ],
+					"midpoints" : [ 929.375, 502.599976000000197, 807.875, 502.599976000000197 ],
 					"order" : 1,
 					"source" : [ "obj-53", 3 ]
 				}
