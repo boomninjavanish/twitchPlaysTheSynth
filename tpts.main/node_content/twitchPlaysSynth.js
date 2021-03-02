@@ -24,10 +24,10 @@ const tmi = require('tmi.js');
 // this will be populated in the MFL patch via the twitchSettings ID key
 twitchApiOptions = {
     identity: {
-        username: "",
-        password: ""
+        username: "boomninjavanish",
+        password: "oauth:j62vr2py0ciqh20bf0u9loof4jpcy0"
     },
-    channels: [ "" ]
+    channels: [ "boomninjavanish" ]
 };
 
 // for making mappers
@@ -37,14 +37,17 @@ let mapperNames = [];
 max.post(`Node version: ${process.version}`);
 
 // create Twitch client
-const client = new tmi.client();
+//const client = new tmi.client();
+const client = new tmi.client(twitchApiOptions);
 
 // Register our event handlers (defined below)
 client.on('message', onMessageHandler);
 
 // Called every time a message comes in
 function onMessageHandler (target, context, msg, self) {
-    //if (self) { return; } // Ignore messages from the bot
+    // Ignore messages from the bot
+    if (self) { return; } 
+
     max.outlet("onMessageHandler start!");
 
     // Remove whitespace from chat message
@@ -62,11 +65,14 @@ function onMessageHandler (target, context, msg, self) {
         let outputMessage = parser.parse(commandName, mapperNames);
         max.post("Post-parse"); // delete
 
-        // catch error messages then tell the user
+        // if no output messages are returned in the parser, then something is wrong
+        if(outputMessage.length === 0){
+            outputMessage.push("internalError The parser returned nothing to the outputMessage variable.");
+        }
+        // catch error messages then whisper to the user
         if(outputMessage[0].match(errorMessageRegex)){
-            // todo: find out why the following line crashes everything
-            // change to whisper
-            //client.say(target, "Error --> " + outputMessage[0].slice(13));
+            max.post(`context.username = ${context.username}`);
+            client.whisper(context.username, `!tpts error message --> ${outputMessage[0].replace(errorMessageRegex,"")}`);
             max.post("error caught!");// delete
         }
 
@@ -107,9 +113,9 @@ function onPartHandler (channel, username, self) {
 // parse message to connect to Twitch (message === "twitchConnect")
 max.addHandler("twitchConnect", () => {
     // fill in the client connection settings
-    client.username = twitchApiOptions.identity.username;
-    client.password = twitchApiOptions.identity.password;
-    client.channels = twitchApiOptions.channels;
+    //client.username = twitchApiOptions.identity.username;
+    //client.password = twitchApiOptions.identity.password;
+    //client.channels = twitchApiOptions.channels;
 
     // connect bot to twitch
     client.connect()
@@ -137,17 +143,17 @@ max.addHandler("twitchSettings", (inputMessage) => {
 
     // twitchApi
     if(settingsKey[0] === "twitchApi"){
-        twitchApiOptions.identity.password = inputMessage.replace(keyPlusSpaceRegex, "");
+        //twitchApiOptions.identity.password = inputMessage.replace(keyPlusSpaceRegex, "");
     }
 
     // twitchUser
     if(settingsKey[0] === "twitchUser"){
-        twitchApiOptions.identity.username = inputMessage.replace(keyPlusSpaceRegex, "");
+        //twitchApiOptions.identity.username = inputMessage.replace(keyPlusSpaceRegex, "");
     }
 
     // twitchChan
     if(settingsKey[0] === "twitchChan"){
-        twitchApiOptions.channels[0] = inputMessage.replace(keyPlusSpaceRegex, "");
+        //twitchApiOptions.channels[0] = inputMessage.replace(keyPlusSpaceRegex, "");
     }
 });
 

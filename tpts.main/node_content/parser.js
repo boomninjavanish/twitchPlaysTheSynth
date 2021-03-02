@@ -11,8 +11,6 @@
 
  */
 exports.parse = function(inputMessage, mapperNames, tonalCenter = 48.0) {
-    max.post("in parser");// delete
-
     // find which message is being parsed
     let outputMessage = []; // the Max formatted output
     let typeRegex = /^![a-zA-Z]+/; // the inputKey with exclamation point
@@ -20,17 +18,17 @@ exports.parse = function(inputMessage, mapperNames, tonalCenter = 48.0) {
     let noAhhh = ""; // input key with out the AHHHH!!! (exclamation point)
 
     if(matches.length > 0){
-        max.post("in parser: matches.length > 0");// delete
         noAhhh = matches[0].slice(1); // strip the exclamation point from the key for paramamapper messages
 
         // parse melody if '!m'; everything else is considered to be paramamapper or error
         if(matches[0] === "!m")
             outputMessage = parseMelody(inputMessage, tonalCenter);
 
-        else if(mapperNames.includes(noAhhh))
-            parseTwoParameters(inputMessage, matches[0], `/tpts/paramampper ${noAhhh}`);
-
-        else {
+        else if(mapperNames.includes(noAhhh)){
+            outputMessage.push(`inputMessage = ${inputMessage}, noAhhh = ${noAhhh}`);// delete
+            outputMessage = parseTwoParameters(inputMessage, matches[0], `/tpts/paramamapper ${noAhhh}`);
+            return outputMessage;
+        } else {
             // incorrect command; make error and return
             outputMessage.push(`/tpts/twitchBot/errorMessage '${inputMessage} is not a valid command'`);
             return outputMessage;
@@ -120,18 +118,19 @@ function parseSequencerNumber(inputMessage){
         single output message in an array
 */
 function parseTwoParameters(inputMessage, inputKey, outputKey, min = 0, max = 127){
-    max.post("in parser: parseTwoParameters");// delete
     let outputMessage = []; // the Max formatted output array
+    outputMessage.push(`parseTwoParameters Started`);// delete
 
     //strip out the identifier
     let strippedMessage = inputMessage.replace(/^!\w+\s/, "");
 
     // grab the separate commands
     let commands = strippedMessage.split("-");
+    outputMessage.push(`commands.length = ${commands.length}`);// delete
 
     // check for requisite number of commands and correct data type
     if(commands.length === 2){
-        max.post("in parser: commands === 2");
+        outputMessage.push("post if(commands.length === 2)");// delete
         // does the message have invalid characters?
         for(let character of strippedMessage){
             if( !(character === "-" || character === '.' || /^\d$/.test(character)) ){

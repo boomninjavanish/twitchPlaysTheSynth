@@ -42,6 +42,48 @@
 		"title" : "tpts.main",
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-21",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 661.0, 707.0, 63.0, 22.0 ],
+					"text" : "script stop"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-16",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 560.0, 707.0, 64.0, 22.0 ],
+					"text" : "script start"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-10",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "" ],
+					"patching_rect" : [ 598.0, 836.0, 127.0, 22.0 ],
+					"saved_object_attributes" : 					{
+						"autostart" : 0,
+						"defer" : 0,
+						"watch" : 0
+					}
+,
+					"text" : "node.script nodeVer.js"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"fontface" : 0,
 					"fontname" : "Helvetica Bold",
 					"fontsize" : 48.0,
@@ -1411,7 +1453,7 @@
 					"patching_rect" : [ 195.5, 883.0, 296.0, 18.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 65.5, 168.0, 332.0, 18.0 ],
-					"text" : "Error running node.js script",
+					"text" : "Script started",
 					"textcolor" : [ 0.980392156862745, 0.0, 0.0, 1.0 ]
 				}
 
@@ -1477,7 +1519,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 103.0, 95.0, 1742.0, 1261.0 ],
+						"rect" : [ 391.0, 96.0, 1742.0, 1261.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
@@ -1509,6 +1551,88 @@
 						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
+									"id" : "obj-25",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 762.0, 227.0, 145.0, 22.0 ],
+									"text" : "print scriptOpsMessageIn"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-24",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 1356.0, 373.0, 85.0, 22.0 ],
+									"text" : "prepend code:"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-23",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 1230.333333333333485, 373.0, 87.0, 22.0 ],
+									"text" : "prepend stack:"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-22",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 1104.666666666666742, 373.0, 94.0, 22.0 ],
+									"text" : "prepend details:"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-21",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 979.0, 373.0, 108.0, 22.0 ],
+									"text" : "prepend message:"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-20",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 979.0, 447.0, 103.0, 22.0 ],
+									"text" : "print node.js-error"
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-4",
+									"maxclass" : "newobj",
+									"numinlets" : 1,
+									"numoutlets" : 4,
+									"outlettype" : [ "", "", "", "" ],
+									"patching_rect" : [ 979.0, 324.0, 396.0, 22.0 ],
+									"text" : "dict.unpack message: details: stack: code:"
+								}
+
+							}
+, 							{
+								"box" : 								{
 									"bubble" : 1,
 									"bubbleside" : 3,
 									"id" : "obj-97",
@@ -1516,8 +1640,7 @@
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 23.0, 856.5, 124.0, 64.0 ],
-									"presentation_linecount" : 3,
+									"patching_rect" : [ 43.0, 783.5, 124.0, 64.0 ],
 									"text" : "resend/send mapperNames when script is started"
 								}
 
@@ -1529,8 +1652,8 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 154.0, 877.5, 186.0, 22.0 ],
-									"text" : "/tpts/paramamapper/remind bang"
+									"patching_rect" : [ 175.0, 804.5, 156.0, 22.0 ],
+									"text" : "/tpts/paramamapper/remind"
 								}
 
 							}
@@ -1555,7 +1678,6 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 878.0, 157.0, 159.0, 37.0 ],
-									"presentation_linecount" : 4,
 									"text" : "recieve OSC messages from other modules"
 								}
 
@@ -1579,7 +1701,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 0,
 									"patching_rect" : [ 350.0, 1013.0, 138.0, 22.0 ],
-									"text" : "udpsend 127.0.0.1 8008"
+									"text" : "udpsend 127.0.0.1 9009"
 								}
 
 							}
@@ -1665,16 +1787,6 @@
 									"outlettype" : [ "", "" ],
 									"patching_rect" : [ 979.0, 278.0, 65.0, 22.0 ],
 									"text" : "route error"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-22",
-									"maxclass" : "dict.view",
-									"numinlets" : 1,
-									"numoutlets" : 0,
-									"patching_rect" : [ 979.0, 362.0, 546.0, 76.0 ]
 								}
 
 							}
@@ -2063,7 +2175,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 411.0, 675.0, 61.0, 22.0 ],
+									"patching_rect" : [ 350.0, 922.0, 61.0, 22.0 ],
 									"text" : "sprintf %s"
 								}
 
@@ -2302,7 +2414,35 @@
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-22", 0 ],
+									"destination" : [ "obj-20", 0 ],
+									"source" : [ "obj-21", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-20", 0 ],
+									"source" : [ "obj-22", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-20", 0 ],
+									"source" : [ "obj-23", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-20", 0 ],
+									"source" : [ "obj-24", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-4", 0 ],
 									"source" : [ "obj-27", 0 ]
 								}
 
@@ -2328,6 +2468,14 @@
 								"patchline" : 								{
 									"destination" : [ "obj-37", 0 ],
 									"order" : 0,
+									"source" : [ "obj-3", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-44", 0 ],
+									"order" : 1,
 									"source" : [ "obj-3", 0 ]
 								}
 
@@ -2368,14 +2516,6 @@
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-74", 0 ],
-									"order" : 1,
-									"source" : [ "obj-3", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
 									"destination" : [ "obj-79", 0 ],
 									"midpoints" : [ 510.5, 526.0, 1365.5, 526.0 ],
 									"order" : 1,
@@ -2385,8 +2525,43 @@
 							}
 , 							{
 								"patchline" : 								{
+									"destination" : [ "obj-21", 0 ],
+									"source" : [ "obj-4", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-22", 0 ],
+									"source" : [ "obj-4", 1 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-23", 0 ],
+									"source" : [ "obj-4", 2 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-24", 0 ],
+									"source" : [ "obj-4", 3 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-47", 0 ],
 									"source" : [ "obj-43", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-74", 0 ],
+									"source" : [ "obj-44", 0 ]
 								}
 
 							}
@@ -2487,7 +2662,16 @@
 							}
 , 							{
 								"patchline" : 								{
+									"destination" : [ "obj-25", 0 ],
+									"order" : 0,
+									"source" : [ "obj-70", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-3", 0 ],
+									"order" : 1,
 									"source" : [ "obj-70", 0 ]
 								}
 
@@ -2625,7 +2809,7 @@
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-74", 0 ],
+									"destination" : [ "obj-44", 0 ],
 									"source" : [ "obj-96", 0 ]
 								}
 
@@ -2669,6 +2853,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-10", 0 ],
+					"source" : [ "obj-16", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-4", 0 ],
 					"source" : [ "obj-17", 0 ]
 				}
@@ -2699,6 +2890,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-28", 0 ],
 					"source" : [ "obj-2", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-10", 0 ],
+					"source" : [ "obj-21", 0 ]
 				}
 
 			}
@@ -3035,6 +3233,13 @@
 , 			{
 				"name" : "fit_jweb_to_bounds.js",
 				"bootpath" : "C74:/packages/Node For Max/patchers/debug-monitor",
+				"type" : "TEXT",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "nodeVer.js",
+				"bootpath" : "~/Documents/GitHub/twitchPlaysTheSynth/tpts.main/node_content",
+				"patcherrelativepath" : "../node_content",
 				"type" : "TEXT",
 				"implicit" : 1
 			}

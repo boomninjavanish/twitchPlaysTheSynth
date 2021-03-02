@@ -7,6 +7,7 @@
 #   !!!!!private!!!!!!
 ##################################
 creds.js
+.code-workspace
 
 ##################################
 #   OS junk
@@ -24,13 +25,6 @@ Thumbs.db
 ##################################
 # these files are no longer relevant but need to be backed up locally
 oldWorld/*
-
-##################################
-#   other files
-##################################
-package-lock.json
-package.json
-twitch_plays_synth.iml
 
 ##################################
 #   node.js stuff
