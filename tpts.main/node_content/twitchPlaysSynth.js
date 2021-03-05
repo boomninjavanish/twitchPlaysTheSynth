@@ -24,10 +24,10 @@ const tmi = require('tmi.js');
 // this will be populated in the MFL patch via the twitchSettings ID key
 twitchApiOptions = {
     identity: {
-        username: "boomninjavanish",
-        password: "oauth:j62vr2py0ciqh20bf0u9loof4jpcy0"
+        username: "",
+        password: ""
     },
-    channels: [ "boomninjavanish" ]
+    channels: [ "" ]
 };
 
 // for making mappers
@@ -113,9 +113,9 @@ function onPartHandler (channel, username, self) {
 // parse message to connect to Twitch (message === "twitchConnect")
 max.addHandler("twitchConnect", () => {
     // fill in the client connection settings
-    //client.username = twitchApiOptions.identity.username;
-    //client.password = twitchApiOptions.identity.password;
-    //client.channels = twitchApiOptions.channels;
+    client.username = twitchApiOptions.identity.username;
+    client.password = twitchApiOptions.identity.password;
+    client.channels = twitchApiOptions.channels;
 
     // connect bot to twitch
     client.connect()
@@ -143,17 +143,17 @@ max.addHandler("twitchSettings", (inputMessage) => {
 
     // twitchApi
     if(settingsKey[0] === "twitchApi"){
-        //twitchApiOptions.identity.password = inputMessage.replace(keyPlusSpaceRegex, "");
+        twitchApiOptions.identity.password = inputMessage.replace(keyPlusSpaceRegex, "");
     }
 
     // twitchUser
     if(settingsKey[0] === "twitchUser"){
-        //twitchApiOptions.identity.username = inputMessage.replace(keyPlusSpaceRegex, "");
+        twitchApiOptions.identity.username = inputMessage.replace(keyPlusSpaceRegex, "");
     }
 
     // twitchChan
     if(settingsKey[0] === "twitchChan"){
-        //twitchApiOptions.channels[0] = inputMessage.replace(keyPlusSpaceRegex, "");
+        twitchApiOptions.channels[0] = inputMessage.replace(keyPlusSpaceRegex, "");
     }
 });
 

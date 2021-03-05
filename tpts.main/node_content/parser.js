@@ -302,7 +302,7 @@ function parseMelody(inputMessage, tonalCenter){
     // output the data to be placed in the melody coll
     for(let line of melody){
         outputMessage.push(
-            "noteData " +
+            "/tpts/melodySeq/noteData " +
             seqNumber + " " +
             line.index + " " +
             line.pitch + " " +
@@ -314,10 +314,10 @@ function parseMelody(inputMessage, tonalCenter){
     }
 
     // output number of notes to be played
-    outputMessage.push("noteQty " + seqNumber + " " + melody.length);
+    outputMessage.push("/tpts/melodySeq/noteQty " + seqNumber + " " + melody.length);
 
     // output the original message for the dashboard
-    outputMessage.push("userMelody " + seqNumber + " " + inputMessage);
+    outputMessage.push("/tpts/melodySeq/userMelody " + seqNumber + " " + inputMessage);
 
     // return all of the messages in an array
     return outputMessage;
@@ -369,7 +369,7 @@ function parseTonalOffset(inputMessage){
     }
 
     // return message in an array
-    outputMessage.push("tonalOffset " + seqNumber + " " + strippedMessage);
+    outputMessage.push("/tpts/melodySeq/tonalOffset " + seqNumber + " " + strippedMessage);
     return outputMessage;
 }
 
