@@ -1,0 +1,22 @@
+{
+  "name": "twitch_plays_the_synth",
+  "version": "0.4.0",
+  "description": "TPTS is a Twitch stream where users can control various parameters of a synthesizer via chat commands.",
+  "main": "twitchPlaysSynth.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boomninjavanish/twitchPlaysTheSynth.git"
+  },
+  "author": "Matthew Dunlap <matthew@dunlap.media> (https://dunlap.media)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/boomninjavanish/twitchPlaysTheSynth/issues"
+  },
+  "homepage": "https://github.com/boomninjavanish/twitchPlaysTheSynth#readme",
+  "dependencies": {
+    "tmi.js": "1.5.0"
+  }
+}

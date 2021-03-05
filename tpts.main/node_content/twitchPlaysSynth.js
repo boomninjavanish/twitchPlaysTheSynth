@@ -30,40 +30,58 @@ twitchApiOptions = {
     channels: [ "" ]
 };
 
+// for making mappers
+let mapperNames = [];
+
 // tell us the node version
 max.post(`Node version: ${process.version}`);
 
 // create Twitch client
-const client = new tmi.client();
+//const client = new tmi.client();
+const client = new tmi.client(twitchApiOptions);
 
 // Register our event handlers (defined below)
 client.on('message', onMessageHandler);
 
 // Called every time a message comes in
 function onMessageHandler (target, context, msg, self) {
-    //if (self) { return; } // Ignore messages from the bot
-    console.log("onMessageHandler start!");
+    // Ignore messages from the bot
+    if (self) { return; } 
+
+    max.outlet("onMessageHandler start!");
 
     // Remove whitespace from chat message
     const commandName = msg.trim();
 
     // If the command is known, let's execute it
     if (commandName.slice(0, 1) === '!') {
+        let errorMessageRegex = /^\/tpts\/twitchBot\/errorMessage/;
+
+        max.post("Pre-parse");// delete
+
         max.post(`Parsing ${commandName}...`);
 
         // parse the command
-        let outputMessage = parser.parse(commandName);
+        let outputMessage = parser.parse(commandName, mapperNames);
+        max.post("Post-parse"); // delete
 
-        // catch error messages then tell the user
-        if(outputMessage[0].slice(0, 12) === "errorMessage"){
-            // todo: find out why the following line crashes everything
-            //client.say(target, "Error --> " + outputMessage[0].slice(13));
+        // if no output messages are returned in the parser, then something is wrong
+        if(outputMessage.length === 0){
+            outputMessage.push("internalError The parser returned nothing to the outputMessage variable.");
+        }
+        // catch error messages then whisper to the user
+        if(outputMessage[0].match(errorMessageRegex)){
+            max.post(`context.username = ${context.username}`);
+            client.whisper(context.username, `!tpts error message --> ${outputMessage[0].replace(errorMessageRegex,"")}`);
+            max.post("error caught!");// delete
         }
 
+        max.outlet("pre-return"); // delete
         // output all parsed Max messages in returned array
         for(let line of outputMessage){
             max.outlet(line);
         }
+        max.post("Post-return"); // delete
 
         // if command is a melody, send user name to dashboard
         if(commandName.slice(0, 2) === '!m'){
@@ -102,10 +120,10 @@ max.addHandler("twitchConnect", () => {
     // connect bot to twitch
     client.connect()
         .then((data) => {
-            max.outlet(`twitchMessage Connected to ${data}`);
+            max.outlet(`/tpts/twitchBot/messageOut 'Connected to ${data}'`);
         })
         .catch((err) => {
-            max.outlet(`twitchMessage Error connecting to Twitch: ${err}`);
+            max.outlet(`/tpts/twitchBot/messageOut 'Error connecting to Twitch: ${err}'`);
             max.outlet("twitchBangDisconnectError bang");
         });
 });
@@ -114,7 +132,7 @@ max.addHandler("twitchConnect", () => {
 max.addHandler("twitchDisconnect", () => {
     // connect bot to twitch
     client.disconnect();
-    max.outlet("twitchMessage Disconnected from Twitch");
+    max.outlet("/tpts/twitchBot/messageOut 'Disconnected from Twitch'");
 });
 
 // parse twitch api access settings (prepended with twitchSettings)
@@ -149,4 +167,25 @@ max.addHandler("input", (inputMessage) => {
     for(let line of outputMessage){
         max.outlet(line);
     }
+});
+
+// register new mapper names
+max.addHandler("mapperName", (mapperName) => {
+    // do not register if already there
+    if(!mapperNames.includes(mapperName)){
+        mapperNames.push(mapperName);
+    }
+    max.outlet("add mapper");// delete
+});
+
+// deletes mapper names
+max.addHandler("deleteMapperName", (mapperName) => {
+    // find it
+    let indexToDelete = mapperNames.indexOf(mapperName);
+
+    // if found, delete
+    if(indexToDelete > -1){
+        mapperNames.splice(indexToDelete);
+    }
+    max.outlet("delete mapper");// delete
 });

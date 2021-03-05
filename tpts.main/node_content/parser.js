@@ -10,52 +10,32 @@
 
 
  */
-exports.parse = function(inputMessage, tonalCenter = 48.0) {
-
+exports.parse = function(inputMessage, mapperNames, tonalCenter = 48.0) {
     // find which message is being parsed
     let outputMessage = []; // the Max formatted output
-    let typeRegex = /^![a-zA-Z]+/;
-    let matches = inputMessage.match(typeRegex);
+    let typeRegex = /^![a-zA-Z]+/; // the inputKey with exclamation point
+    let matches = inputMessage.match(typeRegex); // get the inputKey from the message
+    let noAhhh = ""; // input key with out the AHHHH!!! (exclamation point)
 
-    if(matches[0] === "!m")
-        outputMessage = parseMelody(inputMessage, tonalCenter);
+    if(matches.length > 0){
+        noAhhh = matches[0].slice(1); // strip the exclamation point from the key for paramamapper messages
 
-    else if(matches[0] === "!c")
-        outputMessage = parseTonalOffset(inputMessage);
+        // parse melody if '!m'; everything else is considered to be paramamapper or error
+        if(matches[0] === "!m")
+            outputMessage = parseMelody(inputMessage, tonalCenter);
 
-    else if(matches[0] === "!f")
-        outputMessage = parseFilterFreq(inputMessage);
-
-    else if(matches[0] === "!r")
-        outputMessage = parseResonance(inputMessage);
-
-    else if(matches[0] === "!t")
-        outputMessage = parseTempo(inputMessage);
-
-    else if(matches[0] === "!s")
-        outputMessage = parseSlew(inputMessage);
-
-    else if(matches[0] === "!y")
-        outputMessage = parseFmAmount(inputMessage);
-
-    else if(matches[0] === "!l")
-        outputMessage = parseLfo(inputMessage);
-
-    else if(matches[0] === "!mario")
-        outputMessage = parseMario(inputMessage);
-
-    else if(matches[0] === "!luigi")
-        outputMessage = parseLuigi(inputMessage);
-
-    else if(matches[0] === "!yoshi")
-        outputMessage = parseYoshi(inputMessage);
-
-    else if(matches[0] === "!peach")
-        outputMessage = parsePeach(inputMessage);
-
-    else{
-        // incorrect command; make error and return
-        outputMessage.push("errorMessage '" + inputMessage + " is not a valid command'");
+        else if(mapperNames.includes(noAhhh)){
+            outputMessage.push(`inputMessage = ${inputMessage}, noAhhh = ${noAhhh}`);// delete
+            outputMessage = parseTwoParameters(inputMessage, matches[0], `/tpts/paramamapper ${noAhhh}`);
+            return outputMessage;
+        } else {
+            // incorrect command; make error and return
+            outputMessage.push(`/tpts/twitchBot/errorMessage '${inputMessage} is not a valid command'`);
+            return outputMessage;
+        }
+    } else {
+        // no matches found; make error and return
+        outputMessage.push(`/tpts/twitchBot/errorMessage 'No message found in ${inputMessage}'`);
         return outputMessage;
     }
 
@@ -102,6 +82,99 @@ function parseSequencerNumber(inputMessage){
     return {
         strippedMessage: strippedMessage,
         sequencerNumber: parseInt(sequencerNumber)
+    }
+}
+
+/*
+ parse two parameters - parses a input key followed by two numeric parameters; one for the amount of change
+    the other for the duration in beats for the change to glide towards in a linear ramp
+
+    input message format:
+        "<inputKey> <amount>-<beats> "
+            <inputKey>  = the key that the user enters to indicate a specific command
+            <amount>    = the amount change requested by the user
+            <beats>     = beats; how many quarter notes to for the change to take place; 0 = immediately
+
+        Example (change the resonance knob to 64 over 8 beats):
+
+            "!r 64-8"
+
+    inputKey:
+        the key that designates the command to be performed (example: "!z"); this parameter is used for
+        error messages
+
+    outputKey:
+        the key that will tell the Max patch what command is being requested (example: "resonance")
+
+    min/max (optional):
+        the minimum/maximum amount allowed by the command being requested; both min and max
+        are used for error checking; defaults to 0 and 127 respectively
+
+    output message format:
+        "resonance <amount> <beats>"
+        "resonance 64 8"
+
+    returns:
+        single output message in an array
+*/
+function parseTwoParameters(inputMessage, inputKey, outputKey, min = 0, max = 127){
+    let outputMessage = []; // the Max formatted output array
+    outputMessage.push(`parseTwoParameters Started`);// delete
+
+    //strip out the identifier
+    let strippedMessage = inputMessage.replace(/^!\w+\s/, "");
+
+    // grab the separate commands
+    let commands = strippedMessage.split("-");
+    outputMessage.push(`commands.length = ${commands.length}`);// delete
+
+    // check for requisite number of commands and correct data type
+    if(commands.length === 2){
+        outputMessage.push("post if(commands.length === 2)");// delete
+        // does the message have invalid characters?
+        for(let character of strippedMessage){
+            if( !(character === "-" || character === '.' || /^\d$/.test(character)) ){
+                // make error and return
+                outputMessage.push("/tpts/twitchBot/errorMessage '" + inputKey + seqNumber + ": " +
+                    strippedMessage + " is not a valid message'");
+                return outputMessage;
+            }
+        }
+
+        let amount = parseFloat(commands[0]);
+        let beats = parseFloat(commands[1]);
+
+        // is amount a number?
+        if(isNaN(amount)){
+            // make error message
+            outputMessage.push("/tpts/twitchBot/errorMessage '" + inputKey + ": " + commands[0] + " is not a valid amount'");
+            return outputMessage;
+        }
+
+        // is amount in range?
+        if(amount < min || amount > max){
+            // make error message
+            outputMessage.push("/tpts/twitchBot/errorMessage '" + inputKey + ": " + commands[0] + " is out of range; " +
+                "must be between " + min + " and " + max + "'");
+            return outputMessage;
+        }
+
+        // are the number of beats a floating point number?
+        if(isNaN(beats)){
+            // make error message
+            outputMessage.push("/tpts/twitchBot/errorMessage '" + inputKey + ": " + commands[1] +
+                " is not a valid number of beats'");
+            return outputMessage;
+        }
+
+        // if all tests pass, send the parameter changes
+        outputMessage.push(outputKey + " " + amount + " " + beats);
+        return outputMessage;
+    }
+    else {
+        // make error message
+        outputMessage.push("/tpts/twitchBot/errorMessage '" + inputKey + " requires two commands separated by a hyphen'");
+        return outputMessage;
     }
 }
 
@@ -158,7 +231,7 @@ function parseMelody(inputMessage, tonalCenter){
 
     // error if no number is found
     if(isNaN(parsedSequenceNumber.sequencerNumber)){
-        outputMessage.push("errorMessage '!m: missing melody sequencer number'");
+        outputMessage.push("/tpts/twitchBot/errorMessage '!m: missing melody sequencer number'");
         return outputMessage;
     }
 
@@ -179,7 +252,7 @@ function parseMelody(inputMessage, tonalCenter){
         // does the note have the correct number of elements?
         if(noteArray.length !== 3){
             // make error and return
-            outputMessage.push("errorMessage '!m: " + note + " does not contain the correct number of elements'");
+            outputMessage.push("/tpts/twitchBot/errorMessage '!m: " + note + " does not contain the correct number of elements'");
             return outputMessage;
         }
 
@@ -193,14 +266,14 @@ function parseMelody(inputMessage, tonalCenter){
         // the direction is invalid
         else{
             // make error and return
-            outputMessage.push("errorMessage '!m: " + note + " does not contain a valid direction'");
+            outputMessage.push("/tpts/twitchBot/errorMessage '!m: " + note + " does not contain a valid direction'");
             return outputMessage;
         }
 
         // check the pitch amount for correctness
         if(isNaN(pitch)){
             // make error and return
-            outputMessage.push("errorMessage '!m: " + note + " does not contain a valid pitch'");
+            outputMessage.push("/tpts/twitchBot/errorMessage '!m: " + note + " does not contain a valid pitch'");
             return outputMessage;
         }
 
@@ -209,7 +282,7 @@ function parseMelody(inputMessage, tonalCenter){
         // check the duration for correctness
         if(isNaN(duration)){
             // make error and return
-            outputMessage.push("errorMessage '!m: " + note + " does not contain a valid duration'");
+            outputMessage.push("/tpts/twitchBot/errorMessage '!m: " + note + " does not contain a valid duration'");
             return outputMessage;
         }
 
@@ -229,7 +302,7 @@ function parseMelody(inputMessage, tonalCenter){
     // output the data to be placed in the melody coll
     for(let line of melody){
         outputMessage.push(
-            "noteData " +
+            "/tpts/melodySeq/noteData " +
             seqNumber + " " +
             line.index + " " +
             line.pitch + " " +
@@ -241,10 +314,10 @@ function parseMelody(inputMessage, tonalCenter){
     }
 
     // output number of notes to be played
-    outputMessage.push("noteQty " + seqNumber + " " + melody.length);
+    outputMessage.push("/tpts/melodySeq/noteQty " + seqNumber + " " + melody.length);
 
     // output the original message for the dashboard
-    outputMessage.push("userMelody " + seqNumber + " " + inputMessage);
+    outputMessage.push("/tpts/melodySeq/userMelody " + seqNumber + " " + inputMessage);
 
     // return all of the messages in an array
     return outputMessage;
@@ -276,7 +349,7 @@ function parseTonalOffset(inputMessage){
 
     // error if no number is found
     if(isNaN(parsedSequenceNumber.sequencerNumber)){
-        outputMessage.push("errorMessage '!c: missing melody sequencer number. For example, use !c2 1 " +
+        outputMessage.push("/tpts/twitchBot/errorMessage '!c: missing melody sequencer number. For example, use !c2 1 " +
             "to move sequencer number 2 up a step.'");
         return outputMessage;
     }
@@ -290,13 +363,13 @@ function parseTonalOffset(inputMessage){
     for(let character of strippedMessage){
         if( !(character === '-' || character === '.' || /^\d$/.test(character)) ){
             // make error and return
-            outputMessage.push("errorMessage '!c: " + inputMessage + " is not a valid tonal center change'");
+            outputMessage.push("/tpts/twitchBot/errorMessage '!c: " + inputMessage + " is not a valid tonal center change'");
             return outputMessage;
         }
     }
 
     // return message in an array
-    outputMessage.push("tonalOffset " + seqNumber + " " + strippedMessage);
+    outputMessage.push("/tpts/melodySeq/tonalOffset " + seqNumber + " " + strippedMessage);
     return outputMessage;
 }
 
@@ -543,116 +616,4 @@ function parsePeach(inputMessage){
 
     return parseTwoParameters(inputMessage, "!peach", "peach", 0, 127);
 
-}
-
-/*
- parse two parameters - parses a input key followed by two numeric parameters; one for the amount of change
-    the other for the duration in beats for the change to glide towards in a linear ramp
-
-    input message format:
-        "<inputKey> <amount>-<beats> "
-            <inputKey>  = the key that the user enters to indicate a specific command
-            <amount>    = the amount change requested by the user
-            <beats>     = beats; how many quarter notes to for the change to take place; 0 = immediately
-
-        Example (change the resonance knob to 64 over 8 beats):
-
-            "!r 64-8"
-
-    inputKey:
-        the key that designates the command to be performed (example: "!z"); this parameter is used for
-        error messages
-
-    outputKey:
-        the key that will tell the Max patch what command is being requested (example: "resonance")
-
-    min/max (optional):
-        the minimum/maximum amount allowed by the command being requested; both min and max
-        are used for error checking; defaults to 0 and 127 respectively
-
-    output message format:
-        "resonance <amount> <beats>"
-        "resonance 64 8"
-
-    returns:
-        single output message in an array
-*/
-function parseTwoParameters(inputMessage, inputKey, outputKey, min = 0, max = 127){
-    let outputMessage = []; // the Max formatted output array
-    let seqNumber = 0;
-    let strippedMessage = "";
-
-    if(inputKey === "!t"){
-        // if tempo change, only strip out the identifier
-        strippedMessage = inputMessage.replace(/^!\w+\s/, "");
-    } else {
-        // if not a tempo change, get sequencer number and strip identifier
-        let parsedSequenceNumber = parseSequencerNumber(inputMessage);
-
-        if(isNaN(parsedSequenceNumber.sequencerNumber)){
-            outputMessage.push("errorMessage '" + inputKey +
-                ": missing melody sequencer number. For example, use " + inputKey + "2 63-4 " +
-                "to change the parameter for sequencer number 2 to 63 over 4 beats.'");
-            return outputMessage;
-        }
-        seqNumber = parsedSequenceNumber.sequencerNumber;
-        strippedMessage = parsedSequenceNumber.strippedMessage;
-    }
-
-    // grab the separate commands
-    let commands = strippedMessage.split("-");
-
-    // check for requisite number of commands and correct data type
-    if(commands.length === 2){
-        // does the message have invalid characters?
-        for(let character of strippedMessage){
-            if( !(character === "-" || character === '.' || /^\d$/.test(character)) ){
-                // make error and return
-                outputMessage.push("errorMessage '" + inputKey + seqNumber + ": " +
-                    strippedMessage + " is not a valid message'");
-                return outputMessage;
-            }
-        }
-
-        let amount = parseFloat(commands[0]);
-        let beats = parseFloat(commands[1]);
-
-        // is amount a number?
-        if(isNaN(amount)){
-            // make error message
-            outputMessage.push("errorMessage '" + inputKey + ": " + commands[0] + " is not a valid amount'");
-            return outputMessage;
-        }
-
-        // is amount in range?
-        if(amount < min || amount > max){
-            // make error message
-            outputMessage.push("errorMessage '" + inputKey + ": " + commands[0] + " is out of range; " +
-                "must be between " + min + " and " + max + "'");
-            return outputMessage;
-        }
-
-        // are the number of beats a floating point number?
-        if(isNaN(beats)){
-            // make error message
-            outputMessage.push("errorMessage '" + inputKey + ": " + commands[1] +
-                " is not a valid number of beats'");
-            return outputMessage;
-        }
-
-        // if all tests pass, send the parameter changes
-        // do not send seq. number if changing the tempo
-        if(inputKey === "!t"){
-            outputMessage.push(outputKey + " " + amount + " " + beats);
-        } else {
-            outputMessage.push(outputKey + " " + seqNumber + " " + amount + " " + beats);
-        }
-
-        return outputMessage;
-    }
-    else {
-        // make error message
-        outputMessage.push("errorMessage '" + inputKey + " requires two commands separated by a hyphen'");
-        return outputMessage;
-    }
 }

@@ -1,0 +1,8 @@
+testing notes
+
+problems:
+
+    tpts.main: cleanup console output; make console useful to admin
+    tpts.main: settings do not save between opening
+
+    
