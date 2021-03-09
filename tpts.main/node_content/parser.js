@@ -13,19 +13,20 @@
 exports.parse = function(inputMessage, mapperNames, tonalCenter = 48.0) {
     // find which message is being parsed
     let outputMessage = []; // the Max formatted output
-    let typeRegex = /^![a-zA-Z]+/; // the inputKey with exclamation point
+    let typeRegex = /^!\w+/; // the inputKey with exclamation point
+    let melodyRegex = /^!m\b|^!m\d+\b/;
     let matches = inputMessage.match(typeRegex); // get the inputKey from the message
     let noAhhh = ""; // input key with out the AHHHH!!! (exclamation point)
 
-    if(matches.length > 0){
+    // check to see that we have matches and object is not null or undefined
+    if(matches){ 
         noAhhh = matches[0].slice(1); // strip the exclamation point from the key for paramamapper messages
 
         // parse melody if '!m'; everything else is considered to be paramamapper or error
-        if(matches[0] === "!m")
+        if(matches[0].match(melodyRegex))
             outputMessage = parseMelody(inputMessage, tonalCenter);
 
         else if(mapperNames.includes(noAhhh)){
-            outputMessage.push(`inputMessage = ${inputMessage}, noAhhh = ${noAhhh}`);// delete
             outputMessage = parseTwoParameters(inputMessage, matches[0], `/tpts/paramamapper ${noAhhh}`);
             return outputMessage;
         } else {
@@ -67,14 +68,12 @@ function parseSequencerNumber(inputMessage){
     // find which melody seq. number
     let sequencerNumberArr = strippedMessage.match(numberRegex);
 
-    // set to not a number to indicate error
-    if (!sequencerNumberArr) {
-        return {
-            strippedMessage: null,
-            sequencerNumber: NaN
-        }
-    }
-    sequencerNumber = sequencerNumberArr[0];
+    // set sequencer number to 1 if no number indicated
+    if (sequencerNumberArr) 
+        sequencerNumber = sequencerNumberArr[0];
+    else
+        sequencerNumber = 1;
+    
 
     // strip out number and first space
     strippedMessage = strippedMessage.replace(numberSpaceRegex, '');
@@ -119,18 +118,15 @@ function parseSequencerNumber(inputMessage){
 */
 function parseTwoParameters(inputMessage, inputKey, outputKey, min = 0, max = 127){
     let outputMessage = []; // the Max formatted output array
-    outputMessage.push(`parseTwoParameters Started`);// delete
 
     //strip out the identifier
     let strippedMessage = inputMessage.replace(/^!\w+\s/, "");
 
     // grab the separate commands
     let commands = strippedMessage.split("-");
-    outputMessage.push(`commands.length = ${commands.length}`);// delete
 
     // check for requisite number of commands and correct data type
     if(commands.length === 2){
-        outputMessage.push("post if(commands.length === 2)");// delete
         // does the message have invalid characters?
         for(let character of strippedMessage){
             if( !(character === "-" || character === '.' || /^\d$/.test(character)) ){
@@ -183,7 +179,7 @@ function parseTwoParameters(inputMessage, inputKey, outputKey, min = 0, max = 12
     input message format:
         "!m<seq#> <u/d>-<interval>-<dur> <u/d>-<interval>-<dur> <u/d>-<interval>-<dur>..."
             !m          = (constant) allows the Twitch bot to recognize this as a melody
-            <seq#>      = the sequencer to the send melody
+            <seq#>      = optional; the sequencer to the send melody
             <u/d>       = ("u" | "d") up or down; the direction the note will travel
             <interval>  = the amount of half steps the note will travel; this
                             number must not exceed the bounds of the midi chart.
@@ -228,12 +224,6 @@ function parseMelody(inputMessage, tonalCenter){
 
     // get sequencer number and strip identifier
     let parsedSequenceNumber = parseSequencerNumber(inputMessage);
-
-    // error if no number is found
-    if(isNaN(parsedSequenceNumber.sequencerNumber)){
-        outputMessage.push("/tpts/twitchBot/errorMessage '!m: missing melody sequencer number'");
-        return outputMessage;
-    }
 
     let seqNumber = parsedSequenceNumber.sequencerNumber;
     let strippedMessage = parsedSequenceNumber.strippedMessage;

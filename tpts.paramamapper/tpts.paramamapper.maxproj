@@ -2,7 +2,7 @@
 	"name" : "tpts.paramamapper",
 	"version" : 1,
 	"creationdate" : 3697233263,
-	"modificationdate" : 3697718149,
+	"modificationdate" : 3698058206,
 	"viewrect" : [ 63.0, 699.0, 300.0, 500.0 ],
 	"autoorganize" : 1,
 	"hideprojectwindow" : 0,
@@ -27,6 +27,11 @@
 			}
 ,
 			"tpts.changeParamOverBeats.maxpat" : 			{
+				"kind" : "patcher",
+				"local" : 1
+			}
+,
+			"tpts.pmapper.checkForMelodyCommand.maxpat" : 			{
 				"kind" : "patcher",
 				"local" : 1
 			}
