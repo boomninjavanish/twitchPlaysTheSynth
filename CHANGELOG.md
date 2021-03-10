@@ -26,8 +26,15 @@
 - Cleaned up Node.js modules; was pulling npm dependencies for "tmi" (Too Many Images) rather than just the "tmi.js" (Twitch Messaging Interface).
 - Found that node version on dev machine should be 12 to match what is shipped with Max; this also means that tmi.js should be 1.5 as this combination was found to work well together; versions of tmi.js > 1.5 were found to be buggy with node 12.
 
-## v0.5 (pre-release) (2021-3-x)
+## v0.5 (pre-release) (2021-3-10)
 - changed syntax for melody sequencers to !m\<seq\#\> \<interval\>\[\<beats\>\] (example; move melody for sequencer two down a major 2nd for two measures: **!m2 0\[4\] -2\[4\]**) (resolves #16)
 - entering a melody without a sequencer number now defaults to sequencer 1
 - fixed sequencer number display in tpts.melodySequencer; fonts now match the other devices/app
 - resolved #33
+- Unresolved bugs: 
+    - crash when a decimal value is entered without a number in the whole number digit (for example: .25 instead of 0.25)
+- To do:
+    - make twoParams function use the same syntax as melody seq
+    - #30
+    - #31
+    - #35
