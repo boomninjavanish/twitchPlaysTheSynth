@@ -57,13 +57,10 @@ function onMessageHandler (target, context, msg, self) {
     if (commandName.slice(0, 1) === '!') {
         let errorMessageRegex = /^\/tpts\/twitchBot\/errorMessage/;
 
-        max.post("Pre-parse");// delete
-
         max.post(`Parsing ${commandName}...`);
 
         // parse the command
         let outputMessage = parser.parse(commandName, mapperNames);
-        max.post("Post-parse"); // delete
 
         // if no output messages are returned in the parser, then something is wrong
         if(outputMessage.length === 0){
@@ -73,15 +70,12 @@ function onMessageHandler (target, context, msg, self) {
         if(outputMessage[0].match(errorMessageRegex)){
             max.post(`context.username = ${context.username}`);
             client.whisper(context.username, `!tpts error message --> ${outputMessage[0].replace(errorMessageRegex,"")}`);
-            max.post("error caught!");// delete
         }
 
-        max.outlet("pre-return"); // delete
         // output all parsed Max messages in returned array
         for(let line of outputMessage){
             max.outlet(line);
         }
-        max.post("Post-return"); // delete
 
         // if command is a melody, send user name to dashboard
         if(commandName.slice(0, 2) === '!m'){
@@ -175,7 +169,6 @@ max.addHandler("mapperName", (mapperName) => {
     if(!mapperNames.includes(mapperName)){
         mapperNames.push(mapperName);
     }
-    max.outlet("add mapper");// delete
 });
 
 // deletes mapper names
@@ -187,5 +180,4 @@ max.addHandler("deleteMapperName", (mapperName) => {
     if(indexToDelete > -1){
         mapperNames.splice(indexToDelete);
     }
-    max.outlet("delete mapper");// delete
 });

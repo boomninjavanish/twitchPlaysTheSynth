@@ -13,19 +13,20 @@
 exports.parse = function(inputMessage, mapperNames, tonalCenter = 48.0) {
     // find which message is being parsed
     let outputMessage = []; // the Max formatted output
-    let typeRegex = /^![a-zA-Z]+/; // the inputKey with exclamation point
+    let typeRegex = /^!\w+/; // the inputKey with exclamation point
+    let melodyRegex = /^!m\b|^!m\d+\b/;
     let matches = inputMessage.match(typeRegex); // get the inputKey from the message
     let noAhhh = ""; // input key with out the AHHHH!!! (exclamation point)
 
-    if(matches.length > 0){
+    // check to see that we have matches and object is not null or undefined
+    if(matches){ 
         noAhhh = matches[0].slice(1); // strip the exclamation point from the key for paramamapper messages
 
         // parse melody if '!m'; everything else is considered to be paramamapper or error
-        if(matches[0] === "!m")
+        if(matches[0].match(melodyRegex))
             outputMessage = parseMelody(inputMessage, tonalCenter);
 
         else if(mapperNames.includes(noAhhh)){
-            outputMessage.push(`inputMessage = ${inputMessage}, noAhhh = ${noAhhh}`);// delete
             outputMessage = parseTwoParameters(inputMessage, matches[0], `/tpts/paramamapper ${noAhhh}`);
             return outputMessage;
         } else {
@@ -41,6 +42,134 @@ exports.parse = function(inputMessage, mapperNames, tonalCenter = 48.0) {
 
     // return output to be executed by Max
     return outputMessage;
+}
+
+/*
+ extractValues - parses a message to extract the values and beats
+    Input: 
+        Uses the following syntax: 
+            !ident <val>[<beats>] 
+        For example, the command to adjust "ident" to 12 over 4 beats would be: 
+            !ident 12[4]
+        If the message is intended for a melody sequencer, it will begin with:
+            !m
+                -- or --
+            !m<seq#> where <seq#> is the melody sequencer number (example; for seq# 3 it will be: !m3)
+    Output:
+        Returns the following:
+            output.val
+                An array containing the values 
+            output.beats
+                An array that contains the number of beats over which to change the value
+            output.identifier
+                The message identifier withøut the exclamation point; if it is a melody this
+                value will simply be "m"
+            output.seqNumber
+                If the message is intended for a melody sequencer, this number will be > 0 and
+                contain the value indicated by the user's message
+            output.error
+                An error message to identify problems with input syntax.
+                    "none"          - no errors found
+                    "non-equal"     - value and beats arrays are differing lengths
+                    "no-matches"    - no matches were found, this means the syntax is incorrect
+                    "no-identifier" - no identifier was included in message
+*/
+function extractValues(inputMessage){    
+    // used to find melody identifiers
+    let melodyIdentRegex = /^!m\b|^!m\d+\b/;
+
+    // used to find other identifiers (not melody)
+    let otherIdentRegex = /^!\w+/;
+
+    // used to strip out the identifier
+    let stripRegex = /^![a-zA-Z]+\d+/;
+
+    // used to find the value before the brackets []
+    let valueRegex = /\s([+-]?(\.)?\d+(\.\d+)?)/g; 
+
+    // used to find the value inside the brackets
+    let beatsRegex = /\[([+-]?\d+(\.\d+)?)\]/g; 
+
+    // object array to store the matching values to be returned
+    let extractedValues = [];
+
+    // store the sequencer number -- if there is one
+    extractedValues.seqNumber = 0;
+
+    // find and store the identifier without an exclamation point
+    let melodyIdent = inputMessage.match(melodyIdentRegex);
+    let otherIdent = inputMessage.match(otherIdentRegex);
+
+    if(melodyIdent){
+        // strip the '!'
+        extractedValues.identifier = melodyIdent[0].replace(/^!/, "");
+
+        // grab the seq#
+        extractedValues.seqNumber = parseInt(
+            extractedValues.identifier.replace(/^m/, "")
+        );
+        
+        // if no seq# given, make number 1 by default
+        if(isNaN(extractedValues.seqNumber))
+            extractedValues.seqNumber = 1;
+
+        // strip the seq#
+        extractedValues.identifier = extractedValues.identifier.replace(/\d+$/, "");
+        
+    } else if (otherIdent){
+        // strip the '!'
+        extractedValues.identifier = otherIdent[0].replace(/^!/, "",);
+
+    } else {
+        // error and game over
+        extractedValues.error = "no-identifier";
+        return extractedValues;
+    }
+
+    // strip out the identifier
+    let strippedMessage = inputMessage.replace(stripRegex, null);
+
+    // find the values
+    let valueMatches = strippedMessage.match(valueRegex);
+    let beatsMatches = strippedMessage.match(beatsRegex);
+
+    // work through matches; return with error if no matches found
+    if(valueMatches && beatsMatches){
+        // return with error if number of matches in arrays are not equal
+        if(valueMatches.length === beatsMatches.length){
+            // remove the spaces from the values
+            for(let i in valueMatches)
+                valueMatches[i] = parseFloat(
+                    valueMatches[i].replace(/^\s/, "")
+                    );
+                    
+            // remove the brackets from the beats
+            for(let i in beatsMatches){
+                beatsMatches[i] = parseFloat(
+                    beatsMatches[i]
+                        .replace(/\[/, "")
+                        .replace(/\]/, "")
+                );
+            }
+                        
+            // extract the values and put in returnable array
+            extractedValues.val = [...valueMatches];
+            extractedValues.beats = [...beatsMatches];
+
+            // report no errors occured
+            extractedValues.error = "none";
+
+        } else {
+            // error
+            extractedValues.error = "non-equal";
+        }
+    } else {
+        // error
+        extractedValues.error = "no-matches";
+    }
+
+    // return values
+    return extractedValues;
 }
 
 /*
@@ -67,14 +196,12 @@ function parseSequencerNumber(inputMessage){
     // find which melody seq. number
     let sequencerNumberArr = strippedMessage.match(numberRegex);
 
-    // set to not a number to indicate error
-    if (!sequencerNumberArr) {
-        return {
-            strippedMessage: null,
-            sequencerNumber: NaN
-        }
-    }
-    sequencerNumber = sequencerNumberArr[0];
+    // set sequencer number to 1 if no number indicated
+    if (sequencerNumberArr) 
+        sequencerNumber = sequencerNumberArr[0];
+    else
+        sequencerNumber = 1;
+    
 
     // strip out number and first space
     strippedMessage = strippedMessage.replace(numberSpaceRegex, '');
@@ -119,18 +246,15 @@ function parseSequencerNumber(inputMessage){
 */
 function parseTwoParameters(inputMessage, inputKey, outputKey, min = 0, max = 127){
     let outputMessage = []; // the Max formatted output array
-    outputMessage.push(`parseTwoParameters Started`);// delete
 
     //strip out the identifier
     let strippedMessage = inputMessage.replace(/^!\w+\s/, "");
 
     // grab the separate commands
     let commands = strippedMessage.split("-");
-    outputMessage.push(`commands.length = ${commands.length}`);// delete
 
     // check for requisite number of commands and correct data type
     if(commands.length === 2){
-        outputMessage.push("post if(commands.length === 2)");// delete
         // does the message have invalid characters?
         for(let character of strippedMessage){
             if( !(character === "-" || character === '.' || /^\d$/.test(character)) ){
@@ -183,7 +307,7 @@ function parseTwoParameters(inputMessage, inputKey, outputKey, min = 0, max = 12
     input message format:
         "!m<seq#> <u/d>-<interval>-<dur> <u/d>-<interval>-<dur> <u/d>-<interval>-<dur>..."
             !m          = (constant) allows the Twitch bot to recognize this as a melody
-            <seq#>      = the sequencer to the send melody
+            <seq#>      = optional; the sequencer to the send melody
             <u/d>       = ("u" | "d") up or down; the direction the note will travel
             <interval>  = the amount of half steps the note will travel; this
                             number must not exceed the bounds of the midi chart.
@@ -224,100 +348,49 @@ function parseTwoParameters(inputMessage, inputKey, outputKey, min = 0, max = 12
 */
 function parseMelody(inputMessage, tonalCenter){
     let outputMessage = []; // the Max formatted output array
-    let melody = []; // the melody array
 
-    // get sequencer number and strip identifier
-    let parsedSequenceNumber = parseSequencerNumber(inputMessage);
+    // get the values for the melody
+    let melodyValues = extractValues(inputMessage);
 
-    // error if no number is found
-    if(isNaN(parsedSequenceNumber.sequencerNumber)){
-        outputMessage.push("/tpts/twitchBot/errorMessage '!m: missing melody sequencer number'");
+    // check errors from parsing the values
+    if(melodyValues.error === "none"){
+        // calculate midi pitches from a tonal center
+        let pitch = tonalCenter;
+
+        // the velocity is hardcoded (for now)
+        let velocity = 127;
+
+
+        for(let index in melodyValues.val){
+            // adjust pitch from previous pitch
+            pitch += melodyValues.val[index];
+
+            // output the data to be placed in the melody coll
+            outputMessage.push(
+                "/tpts/melodySeq/noteData " +
+                melodyValues.seqNumber + " " +
+                index + " " +
+                pitch + " " +
+                velocity + " " +
+                melodyValues.beats[index]
+            );
+        }
+        
+    } else {
+        // syntax error and quit
+        outputMessage.push(`/tpts/twitchBot/errorMessage 
+            'the syntax for your melody is incorrect. Please check out the instructions 
+            for the correct syntax.\n
+            Your melody: ${inputMessage}\n
+            An example of a correct melody: !m 0[1] 1[1] 1[1] 5[0.5] -5[0.5]'`);
         return outputMessage;
     }
 
-    let seqNumber = parsedSequenceNumber.sequencerNumber;
-    let strippedMessage = parsedSequenceNumber.strippedMessage;
-
-    // parse the incoming message
-    let messageArray = strippedMessage.split(" "); // get individual notes
-
-    let index = 0; // for note id
-
-    let pitch = tonalCenter; // the final midi pitch number
-
-    for(let note of messageArray){
-        //split the note's parameters
-        let noteArray = note.split("-");
-
-        // does the note have the correct number of elements?
-        if(noteArray.length !== 3){
-            // make error and return
-            outputMessage.push("/tpts/twitchBot/errorMessage '!m: " + note + " does not contain the correct number of elements'");
-            return outputMessage;
-        }
-
-        // calculate the midi pitch number relative to the last pitch
-        if(noteArray[0] === "u"){
-            pitch += parseFloat(noteArray[1]);
-        }
-        else if(noteArray[0] === "d"){
-            pitch -= parseFloat(noteArray[1]);
-        }
-        // the direction is invalid
-        else{
-            // make error and return
-            outputMessage.push("/tpts/twitchBot/errorMessage '!m: " + note + " does not contain a valid direction'");
-            return outputMessage;
-        }
-
-        // check the pitch amount for correctness
-        if(isNaN(pitch)){
-            // make error and return
-            outputMessage.push("/tpts/twitchBot/errorMessage '!m: " + note + " does not contain a valid pitch'");
-            return outputMessage;
-        }
-
-        let duration = parseFloat(noteArray[2]);
-
-        // check the duration for correctness
-        if(isNaN(duration)){
-            // make error and return
-            outputMessage.push("/tpts/twitchBot/errorMessage '!m: " + note + " does not contain a valid duration'");
-            return outputMessage;
-        }
-
-        let velocity = 127;
-
-        // build message
-        melody.push({
-            index,
-            pitch,
-            velocity,
-            duration
-        });
-
-        index++;
-    }
-
-    // output the data to be placed in the melody coll
-    for(let line of melody){
-        outputMessage.push(
-            "/tpts/melodySeq/noteData " +
-            seqNumber + " " +
-            line.index + " " +
-            line.pitch + " " +
-            line.velocity + " " +
-            line.duration
-        );
-
-
-    }
-
     // output number of notes to be played
-    outputMessage.push("/tpts/melodySeq/noteQty " + seqNumber + " " + melody.length);
+    outputMessage.push("/tpts/melodySeq/noteQty " + melodyValues.seqNumber + " " + melodyValues.val.length);
 
     // output the original message for the dashboard
-    outputMessage.push("/tpts/melodySeq/userMelody " + seqNumber + " " + inputMessage);
+    outputMessage.push("/tpts/melodySeq/userMelody " + melodyValues.seqNumber + " " + inputMessage);
 
     // return all of the messages in an array
     return outputMessage;

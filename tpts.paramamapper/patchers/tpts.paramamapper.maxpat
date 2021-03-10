@@ -1479,6 +1479,13 @@
 				"implicit" : 1
 			}
 , 			{
+				"name" : "tpts.pmapper.checkForMelodyCommand.maxpat",
+				"bootpath" : "~/Documents/GitHub/twitchPlaysTheSynth/tpts.paramamapper/patchers",
+				"patcherrelativepath" : ".",
+				"type" : "JSON",
+				"implicit" : 1
+			}
+, 			{
 				"name" : "dunlap.ableton.tempoOps.maxpat",
 				"bootpath" : "~/Documents/GitHub/randomMaxAbstractions",
 				"patcherrelativepath" : "../../../randomMaxAbstractions",
