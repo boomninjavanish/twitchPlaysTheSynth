@@ -246,60 +246,49 @@ function parseSequencerNumber(inputMessage){
 */
 function parseTwoParameters(inputMessage, inputKey, outputKey, min = 0, max = 127){
     let outputMessage = []; // the Max formatted output array
+    let median = parseInt((min + max) / 2); // used to communicate range errors
 
-    //strip out the identifier
-    let strippedMessage = inputMessage.replace(/^!\w+\s/, "");
+    // get the values for the param
+    let extractedValues = extractValues(inputMessage);
 
-    // grab the separate commands
-    let commands = strippedMessage.split("-");
+    if(extractedValues.error === "none"){
+        // send the parsed the values and beats if no error
+        if(extractedValues.val[0] >= min && extractedValues.val[0] <= max){ // test if val is in range
+            if(extractedValues.beats[0] >= 0){ // test if beats are in range
+                outputMessage.push(`${outputKey} ${extractedValues.val[0]} ${extractedValues.beats[0]}`);
+            } else {
+                // syntax error and quit
+                outputMessage.push(`/tpts/twitchBot/errorMessage 
+                'The value of ${extractedValues.beats[0]} is out of range. The value must be greater than
+                or equal to zero. --
+                Your command: ${inputMessage} --
+                An example of a correct command: !${extractedValues.identifier} ${median}[4]'`);
 
-    // check for requisite number of commands and correct data type
-    if(commands.length === 2){
-        // does the message have invalid characters?
-        for(let character of strippedMessage){
-            if( !(character === "-" || character === '.' || /^\d$/.test(character)) ){
-                // make error and return
-                outputMessage.push("/tpts/twitchBot/errorMessage '" + inputKey + seqNumber + ": " +
-                    strippedMessage + " is not a valid message'");
                 return outputMessage;
             }
-        }
+        } else {
+            // syntax error and quit
+            outputMessage.push(`/tpts/twitchBot/errorMessage 
+                'The value of ${extractedValues.val[0]} is out of range. The value must be between
+                ${min} and ${max}. --
+                Your command: ${inputMessage} --
+                An example of a correct command: !${extractedValues.identifier} ${median}[4]'`);
 
-        let amount = parseFloat(commands[0]);
-        let beats = parseFloat(commands[1]);
-
-        // is amount a number?
-        if(isNaN(amount)){
-            // make error message
-            outputMessage.push("/tpts/twitchBot/errorMessage '" + inputKey + ": " + commands[0] + " is not a valid amount'");
             return outputMessage;
         }
+    } else {
+        // syntax error and quit
+        outputMessage.push(`/tpts/twitchBot/errorMessage 
+            'The syntax in your command is incorrect. Please check out the instructions 
+            for the correct syntax. --
+            Your command: ${inputMessage} --
+            An example of a correct command: !${extractedValues.identifier} ${median}[4]'`);
 
-        // is amount in range?
-        if(amount < min || amount > max){
-            // make error message
-            outputMessage.push("/tpts/twitchBot/errorMessage '" + inputKey + ": " + commands[0] + " is out of range; " +
-                "must be between " + min + " and " + max + "'");
-            return outputMessage;
-        }
-
-        // are the number of beats a floating point number?
-        if(isNaN(beats)){
-            // make error message
-            outputMessage.push("/tpts/twitchBot/errorMessage '" + inputKey + ": " + commands[1] +
-                " is not a valid number of beats'");
-            return outputMessage;
-        }
-
-        // if all tests pass, send the parameter changes
-        outputMessage.push(outputKey + " " + amount + " " + beats);
         return outputMessage;
     }
-    else {
-        // make error message
-        outputMessage.push("/tpts/twitchBot/errorMessage '" + inputKey + " requires two commands separated by a hyphen'");
-        return outputMessage;
-    }
+
+    // if all tests pass send it to the paramamapper!
+    return outputMessage;
 }
 
 /*
@@ -379,9 +368,9 @@ function parseMelody(inputMessage, tonalCenter){
     } else {
         // syntax error and quit
         outputMessage.push(`/tpts/twitchBot/errorMessage 
-            'the syntax for your melody is incorrect. Please check out the instructions 
-            for the correct syntax.\n
-            Your melody: ${inputMessage}\n
+            'The syntax for your melody is incorrect. Please check out the instructions 
+            for the correct syntax. -- 
+            Your melody: ${inputMessage} --
             An example of a correct melody: !m 0[1] 1[1] 1[1] 5[0.5] -5[0.5]'`);
         return outputMessage;
     }
