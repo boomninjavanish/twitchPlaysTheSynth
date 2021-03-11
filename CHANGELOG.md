@@ -38,3 +38,6 @@
     - #30
     - #31
     - #35
+
+## v0.6 (pre-release) (2021-3-11)
+- made the paramamapper commands have the same syntax as melody commands (resolves #35)

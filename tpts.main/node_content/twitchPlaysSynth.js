@@ -46,7 +46,7 @@ client.on('message', onMessageHandler);
 // Called every time a message comes in
 function onMessageHandler (target, context, msg, self) {
     // Ignore messages from the bot
-    if (self) { return; } 
+    // if (self) { return; } 
 
     max.outlet("onMessageHandler start!");
 
