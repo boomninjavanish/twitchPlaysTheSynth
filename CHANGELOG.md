@@ -41,3 +41,6 @@
 
 ## v0.6 (pre-release) (2021-3-11)
 - made the paramamapper commands have the same syntax as melody commands (resolves #35)
+
+## v0.6.1 (pre-release) (2021-3-11)
+- the wrong version of the app was released; repackaged correct version
