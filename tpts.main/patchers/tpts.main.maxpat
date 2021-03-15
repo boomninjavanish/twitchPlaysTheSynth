@@ -42,6 +42,29 @@
 		"title" : "!tpts",
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-21",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 828.0, 34.5, 111.0, 22.0 ],
+					"text" : "r reassignSeqBang"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-5",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 493.0, 383.5, 113.0, 22.0 ],
+					"text" : "s reassignSeqBang"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-31",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
@@ -130,10 +153,10 @@
 					"id" : "obj-27",
 					"maxclass" : "newobj",
 					"numinlets" : 1,
-					"numoutlets" : 2,
-					"outlettype" : [ "bang", "int" ],
-					"patching_rect" : [ 59.0, 331.0, 314.5, 22.0 ],
-					"text" : "t b i"
+					"numoutlets" : 3,
+					"outlettype" : [ "bang", "int", "bang" ],
+					"patching_rect" : [ 59.0, 331.0, 547.0, 22.0 ],
+					"text" : "t b i b"
 				}
 
 			}
@@ -477,7 +500,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 1350.0, 1233.0 ],
+						"rect" : [ 137.0, 125.0, 673.0, 415.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 1,
 						"default_fontsize" : 12.0,
@@ -670,7 +693,6 @@
 							}
 , 							{
 								"box" : 								{
-									"autorestore" : "tptsSettings.json",
 									"id" : "obj-21",
 									"maxclass" : "newobj",
 									"numinlets" : 1,
@@ -2536,8 +2558,6 @@
 									"saved_object_attributes" : 									{
 										"autostart" : 0,
 										"defer" : 0,
-										"node_bin_path" : "",
-										"npm_bin_path" : "",
 										"watch" : 0
 									}
 ,
@@ -3078,6 +3098,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-85", 0 ],
+					"source" : [ "obj-21", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-17", 1 ],
 					"source" : [ "obj-23", 0 ]
 				}
@@ -3115,8 +3142,15 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-24", 1 ],
-					"midpoints" : [ 364.0, 431.0, 99.5, 431.0 ],
+					"midpoints" : [ 332.5, 431.0, 99.5, 431.0 ],
 					"source" : [ "obj-27", 1 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-5", 0 ],
+					"source" : [ "obj-27", 2 ]
 				}
 
 			}
@@ -3322,13 +3356,6 @@
 				"bootpath" : "~/Documents/GitHub/twitchPlaysTheSynth/tpts.main/node_content",
 				"patcherrelativepath" : "../node_content",
 				"type" : "TEXT",
-				"implicit" : 1
-			}
-, 			{
-				"name" : "tptsSettings.json",
-				"bootpath" : "~/Downloads",
-				"patcherrelativepath" : "../../../../../Downloads",
-				"type" : "JSON",
 				"implicit" : 1
 			}
 , 			{

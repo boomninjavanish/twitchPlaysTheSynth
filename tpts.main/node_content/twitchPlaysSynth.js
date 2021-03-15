@@ -48,8 +48,6 @@ function onMessageHandler (target, context, msg, self) {
     // Ignore messages from the bot
     // if (self) { return; } 
 
-    max.outlet("onMessageHandler start!");
-
     // Remove whitespace from chat message
     const commandName = msg.trim();
 
@@ -69,7 +67,7 @@ function onMessageHandler (target, context, msg, self) {
         // catch error messages then whisper to the user
         if(outputMessage[0].match(errorMessageRegex)){
             max.post(`context.username = ${context.username}`);
-            client.whisper(context.username, `!tpts error message --> ${outputMessage[0].replace(errorMessageRegex,"")}`);
+            //client.whisper(context.username, `!tpts error message --> ${outputMessage[0].replace(errorMessageRegex,"")}`);
         }
 
         // output all parsed Max messages in returned array
@@ -79,7 +77,7 @@ function onMessageHandler (target, context, msg, self) {
 
         // if command is a melody, send user name to dashboard
         if(commandName.slice(0, 2) === '!m'){
-            max.outlet("userName " + context.username);
+            max.outlet(`/tpts/userName ${context.username}`);
         }
 
 

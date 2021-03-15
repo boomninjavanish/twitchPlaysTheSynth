@@ -1400,8 +1400,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1346.0, 912.400023999999803, 114.0, 22.0 ],
-					"text" : "bang"
+					"patching_rect" : [ 1346.0, 912.400023999999803, 114.0, 22.0 ]
 				}
 
 			}
@@ -1586,7 +1585,7 @@
 					"parameter_enable" : 1,
 					"patching_rect" : [ 842.375, 193.0, 55.0, 18.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 16.375, 2.0, 76.0, 15.0 ],
+					"presentation_rect" : [ 16.375, 2.0, 76.0, 18.0 ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_invisible" : 1,

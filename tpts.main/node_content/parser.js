@@ -13,7 +13,7 @@
 exports.parse = function(inputMessage, mapperNames, tonalCenter = 48.0) {
     // find which message is being parsed
     let outputMessage = []; // the Max formatted output
-    let typeRegex = /^!\w+/; // the inputKey with exclamation point
+    let typeRegex = /^![A-Za-z0-9-]+/; // the inputKey with exclamation point (include all letters, numbers, and hyphens)
     let melodyRegex = /^!m\b|^!m\d+\b/;
     let matches = inputMessage.match(typeRegex); // get the inputKey from the message
     let noAhhh = ""; // input key with out the AHHHH!!! (exclamation point)
@@ -132,11 +132,19 @@ function extractValues(inputMessage){
     // find the values
     let valueMatches = strippedMessage.match(valueRegex);
     let beatsMatches = strippedMessage.match(beatsRegex);
+    let beatsMatchesChecked = [];
+
+    // default the beats to zero if second command omitted
+    if(!beatsMatches){
+        beatsMatchesChecked[0]= "0";
+    } else {
+        beatsMatchesChecked = [...beatsMatches];
+    }
 
     // work through matches; return with error if no matches found
-    if(valueMatches && beatsMatches){
+    if(valueMatches && beatsMatchesChecked){
         // return with error if number of matches in arrays are not equal
-        if(valueMatches.length === beatsMatches.length){
+        if(valueMatches.length === beatsMatchesChecked.length){
             // remove the spaces from the values
             for(let i in valueMatches)
                 valueMatches[i] = parseFloat(
@@ -144,9 +152,9 @@ function extractValues(inputMessage){
                     );
                     
             // remove the brackets from the beats
-            for(let i in beatsMatches){
-                beatsMatches[i] = parseFloat(
-                    beatsMatches[i]
+            for(let i in beatsMatchesChecked){
+                beatsMatchesChecked[i] = parseFloat(
+                    beatsMatchesChecked[i]
                         .replace(/\[/, "")
                         .replace(/\]/, "")
                 );
@@ -154,7 +162,7 @@ function extractValues(inputMessage){
                         
             // extract the values and put in returnable array
             extractedValues.val = [...valueMatches];
-            extractedValues.beats = [...beatsMatches];
+            extractedValues.beats = [...beatsMatchesChecked];
 
             // report no errors occured
             extractedValues.error = "none";
