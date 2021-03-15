@@ -1,0 +1,21 @@
+The following is a map of all OSC commands and their respective branches
+
+/tpts
+    |- /twitchBot       [ parent; unused ]
+    |       |- /errorMessage [ messages to be displayed to the max console; <errorMessageText> ]
+    |       ¿- 
+    |
+    |- /paramamapper    [ the commands to change the mapped parameter; <mapperName> <value> <beats>]
+    |       ¿- /remind      [ bang to send mapper names to script again; <bang> ]
+    |
+    |- /melodySeq       [ parent; unused ]
+    |       |- /noteData    [ the data to be placed in the melody coll; <seq#> <index#> <midiNote#> <velocity> <duration> ]
+    |       |- /noteQty     [ the amount of notes in the parsed melody; <seq#> <notesTotal> ]
+    |       |- /userMelody  [ the original message for the dashboard; <usersMessage> ]
+    |       ¿- /tonalOffset [ deprecated -- number to shift the tonal center; <seq#> <offset> ]
+    |
+    |- /sequencerRegistry [ store sequencer info in a coll on main app; <liveDeviceName> <trackName>  ]
+    |
+    |- /registryIndexNumber [ main app responds to sequencer with the sequencer index number; <trackName> <seq#>  ]
+    |
+    ¿- /registryReset   [ a bangs that asks all sequencers to re-register; <bang> ]

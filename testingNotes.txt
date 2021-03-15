@@ -6,3 +6,5 @@ problems:
     tpts.main: settings do not save between opening
 
     
+
+Live devices may need to be on different ports for each device as they are conflicting with each other??

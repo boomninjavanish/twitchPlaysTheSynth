@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 59.0, 106.0, 640.0, 480.0 ],
+		"rect" : [ 59.0, 106.0, 1196.0, 915.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -41,14 +41,39 @@
 		"boxes" : [ 			{
 				"box" : 				{
 					"bubble" : 1,
+					"id" : "obj-12",
+					"linecount" : 4,
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 221.0, 155.0, 137.0, 64.0 ],
+					"presentation_linecount" : 2,
+					"text" : "filter out bangs to avoid error messages in console"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-10",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "" ],
+					"patching_rect" : [ 150.0, 176.0, 66.0, 22.0 ],
+					"text" : "route bang"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"bubble" : 1,
 					"bubbleside" : 3,
 					"id" : "obj-8",
 					"linecount" : 2,
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 224.5, 438.5, 90.0, 37.0 ],
-					"presentation_linecount" : 2,
+					"patching_rect" : [ 224.5, 549.5, 90.0, 37.0 ],
 					"text" : "correct symbols"
 				}
 
@@ -61,7 +86,7 @@
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 315.0, 442.0, 30.0, 30.0 ]
+					"patching_rect" : [ 315.0, 553.0, 30.0, 30.0 ]
 				}
 
 			}
@@ -74,7 +99,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 117.0, 384.5, 84.0, 37.0 ],
+					"patching_rect" : [ 117.0, 495.5, 84.0, 37.0 ],
 					"text" : "clear message "
 				}
 
@@ -88,7 +113,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 58.0, 329.5, 90.0, 37.0 ],
+					"patching_rect" : [ 58.0, 440.5, 90.0, 37.0 ],
 					"text" : "error message "
 				}
 
@@ -114,7 +139,7 @@
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 203.0, 388.0, 30.0, 30.0 ]
+					"patching_rect" : [ 203.0, 499.0, 30.0, 30.0 ]
 				}
 
 			}
@@ -126,7 +151,7 @@
 					"maxclass" : "outlet",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 150.0, 333.0, 30.0, 30.0 ]
+					"patching_rect" : [ 150.0, 444.0, 30.0, 30.0 ]
 				}
 
 			}
@@ -151,7 +176,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 392.125, 115.0, 197.0, 78.0 ],
+					"patching_rect" : [ 392.125, 226.0, 197.0, 78.0 ],
 					"text" : "find commands that are exactly \"m\" or \"m + number\" or \"!\"; \nif found, clear value and pop-up error;\nelse, pass to next regex"
 				}
 
@@ -163,7 +188,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 203.0, 226.0, 35.0, 22.0 ],
+					"patching_rect" : [ 203.0, 337.0, 35.0, 22.0 ],
 					"text" : "clear"
 				}
 
@@ -175,7 +200,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 2,
 					"outlettype" : [ "bang", "bang" ],
-					"patching_rect" : [ 150.0, 189.5, 72.0, 22.0 ],
+					"patching_rect" : [ 150.0, 300.5, 72.0, 22.0 ],
 					"text" : "t b b"
 				}
 
@@ -187,7 +212,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 150.0, 269.599976000000197, 279.0, 22.0 ],
+					"patching_rect" : [ 150.0, 380.599976000000197, 279.0, 22.0 ],
 					"text" : "Exclamation points and !m are reserved. Try again."
 				}
 
@@ -199,7 +224,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 5,
 					"outlettype" : [ "", "", "", "", "" ],
-					"patching_rect" : [ 150.0, 143.0, 239.0, 22.0 ],
+					"patching_rect" : [ 150.0, 254.0, 239.0, 22.0 ],
 					"text" : "regexp ^m$|^m\\\\d+$|^!+$ @substitute bang"
 				}
 
@@ -207,8 +232,15 @@
  ],
 		"lines" : [ 			{
 				"patchline" : 				{
-					"destination" : [ "obj-2", 0 ],
+					"destination" : [ "obj-10", 0 ],
 					"source" : [ "obj-1", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-2", 0 ],
+					"source" : [ "obj-10", 1 ]
 				}
 
 			}

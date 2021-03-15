@@ -44,3 +44,10 @@
 
 ## v0.6.1 (pre-release) (2021-3-11)
 - the wrong version of the app was released; repackaged correct version
+
+## v0.6.2 (pre-release) (2021-3-x)
+- fixed problem in paramamapper that was causing the regex object to spam the console with several `regexp: doesn't understand "bang"` error messages upon loading
+- removed syntax error reporting via direct message; commented out client.say() function call in twitchPlaysSynth.js; resolves #41
+- fixed bug: parameter names now can have hyphens; resolves #45
+- fixed bug: the sequencers are now reassigned when the connect button is pressed in tpts.main; resolves #43
+- users can enter a value without a beat number and mapper will immediately go to that value; resolves #31
