@@ -1,6 +1,6 @@
 /*
     twitchPlaysSynth.js
-    2020. Matthew Dunlap.
+    (c) 2020. Matthew Dunlap.
     Twitch Plays the Synth is a project that allows people to perform music collaboratively in
     real time using the a Twitch bot and Max MSP.
     This is the main node.js script that runs in a Max patcher using the node.js object.
@@ -22,7 +22,7 @@ const tmi = require('tmi.js');
 // store twitch api connection settings in this data struct
 // DO NOT FILL IN WITH YOUR SETTINGS
 // this will be populated in the MFL patch via the twitchSettings ID key
-twitchApiOptions = {
+const twitchApiOptions = {
     identity: {
         username: "",
         password: ""
@@ -30,23 +30,22 @@ twitchApiOptions = {
     channels: [ "" ]
 };
 
-// for making mappers
+// for making mappers in paramamapper
 let mapperNames = [];
 
 // tell us the node version
 max.post(`Node version: ${process.version}`);
 
 // create Twitch client
-//const client = new tmi.client();
 const client = new tmi.client(twitchApiOptions);
 
 // Register our event handlers (defined below)
 client.on('message', onMessageHandler);
 
 // Called every time a message comes in
-function onMessageHandler (target, context, msg, self) {
+function onMessageHandler (channel, userstate, msg, self) {
     // Ignore messages from the bot
-    // if (self) { return; } 
+    if (self) { return; } 
 
     // Remove whitespace from chat message
     const commandName = msg.trim();
@@ -66,8 +65,13 @@ function onMessageHandler (target, context, msg, self) {
         }
         // catch error messages then whisper to the user
         if(outputMessage[0].match(errorMessageRegex)){
-            max.post(`context.username = ${context.username}`);
-            //client.whisper(context.username, `!tpts error message --> ${outputMessage[0].replace(errorMessageRegex,"")}`);
+            client.whisper(userstate.username, `!tpts error message --> ${outputMessage[0].replace(errorMessageRegex,"")}`)
+            .then((data) => {
+                // data contains: [username, message]
+                max.post(`Whispered to ${data[0]}: "${data[1]}"`);
+            }).catch((err) => {
+                max.post(`Error whispering to user: ${err}`);
+            });
         }
 
         // output all parsed Max messages in returned array
@@ -77,7 +81,7 @@ function onMessageHandler (target, context, msg, self) {
 
         // if command is a melody, send user name to dashboard
         if(commandName.slice(0, 2) === '!m'){
-            max.outlet(`/tpts/userName ${context.username}`);
+            max.outlet(`/tpts/userName ${userstate.username}`);
         }
 
 
@@ -123,7 +127,13 @@ max.addHandler("twitchConnect", () => {
 // parse message to disconnect from Twitch api ("twitchDisconnect")
 max.addHandler("twitchDisconnect", () => {
     // connect bot to twitch
-    client.disconnect();
+    client.disconnect()
+    .then((data) => {
+        max.post(`Disconnected from Twitch via ${data[0]}:${data[1]}`);
+        max.outlet("/tpts/twitchBot/messageOut 'Disconnected from Twitch'");
+    }).catch((err) => {
+        max.post(`Error disconnecting from Twitch: "${err}"`);
+    });
     max.outlet("/tpts/twitchBot/messageOut 'Disconnected from Twitch'");
 });
 

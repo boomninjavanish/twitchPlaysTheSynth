@@ -51,3 +51,8 @@
 - fixed bug: parameter names now can have hyphens; resolves #45
 - fixed bug: the sequencers are now reassigned when the connect button is pressed in tpts.main; resolves #43
 - users can enter a value without a beat number and mapper will immediately go to that value; resolves #31
+
+## v0.7 (pre-release) (2021-3-16)
+- cleaned up and made code more java-script friendly
+- added error catching to client.whisper() to prevent crashing and burning; resolves #50
+- added auto-restart function in settings page: setting that restarts the node script automatically within five seconds when the script hard crashes or user accidentally presses disconnect; resolves #47

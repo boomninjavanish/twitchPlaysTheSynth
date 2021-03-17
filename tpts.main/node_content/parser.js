@@ -1,8 +1,8 @@
 /*
     parser.parse(message, tonalCenter);
-    (c) 2020 Matthew Dunlap
+    (c) 2020. Matthew Dunlap.
 
-        Decodes messages sent to a Twitch Bot that control parameters on a modular synth
+        Decodes messages sent to a Twitch Bot that control parameters on a synth
 
     parameters:
         inputMessage = input message string
@@ -10,7 +10,7 @@
 
 
  */
-exports.parse = function(inputMessage, mapperNames, tonalCenter = 48.0) {
+exports.parse = function (inputMessage, mapperNames, tonalCenter = 48.0) {
     // find which message is being parsed
     let outputMessage = []; // the Max formatted output
     let typeRegex = /^![A-Za-z0-9-]+/; // the inputKey with exclamation point (include all letters, numbers, and hyphens)
@@ -74,7 +74,7 @@ exports.parse = function(inputMessage, mapperNames, tonalCenter = 48.0) {
                     "no-matches"    - no matches were found, this means the syntax is incorrect
                     "no-identifier" - no identifier was included in message
 */
-function extractValues(inputMessage){    
+const extractValues = function (inputMessage){    
     // used to find melody identifiers
     let melodyIdentRegex = /^!m\b|^!m\d+\b/;
 
@@ -192,7 +192,7 @@ function extractValues(inputMessage){
     number that indicates which sequencer the message is destined to receive; if
     the sequencer number cannot be found, return NaN
  */
-function parseSequencerNumber(inputMessage){
+const parseSequencerNumber = function (inputMessage){
     let typeRegex = /^![a-zA-Z]+/;
     let numberRegex = /^\d+/;
     let numberSpaceRegex = /^\d+\s/;
@@ -252,7 +252,7 @@ function parseSequencerNumber(inputMessage){
     returns:
         single output message in an array
 */
-function parseTwoParameters(inputMessage, inputKey, outputKey, min = 0, max = 127){
+const parseTwoParameters= function (inputMessage, inputKey, outputKey, min = 0, max = 127){
     let outputMessage = []; // the Max formatted output array
     let median = parseInt((min + max) / 2); // used to communicate range errors
 
@@ -343,7 +343,7 @@ function parseTwoParameters(inputMessage, inputKey, outputKey, min = 0, max = 12
     returns:
         multiple output messages in an array
 */
-function parseMelody(inputMessage, tonalCenter){
+const parseMelody = function (inputMessage, tonalCenter){
     let outputMessage = []; // the Max formatted output array
 
     // get the values for the melody
@@ -411,7 +411,7 @@ function parseMelody(inputMessage, tonalCenter){
     returns:
         single output message in an array
 */
-function parseTonalOffset(inputMessage){
+const parseTonalOffset = function (inputMessage){
     let outputMessage = []; // the Max formatted output array
 
     // get sequencer number and strip identifier
@@ -441,249 +441,4 @@ function parseTonalOffset(inputMessage){
     // return message in an array
     outputMessage.push("/tpts/melodySeq/tonalOffset " + seqNumber + " " + strippedMessage);
     return outputMessage;
-}
-
-/*
- parse !f - Decodes a request to change the filter frequency
-    input message format:
-        "!f <amount>-<beats> "
-            !f          = (constant) allows the Twitch bot to recognize this as a frequency change
-            <amount>    = 0-127; the amount of voltage to give to the VCF
-            <beats>     = beats; how many quarter notes to for the change to take place; 0 = immediately
-
-        Example (change the frequency knob to 64 over 8 beats):
-            "!f 64-8"
-
-    output message format:
-        "filterFreq <amount> <beats>"
-        "filterFreq 64 8"
-
-    returns:
-        single output message in an array
-*/
-function parseFilterFreq(inputMessage){
-    return parseTwoParameters(inputMessage, "!f", "filterFreq");
-}
-
-/*
- parse !r - Decodes a request to change the filter resonance
-    input message format:
-        "!r <amount>-<beats> "
-            !r          = (constant) allows the Twitch bot to recognize this as a resonance change
-            <amount>    = 0-127; the amount of voltage to give to the VCF
-            <beats>     = beats; how many quarter notes to for the change to take place; 0 = immediately
-
-        Example (change the resonance knob to 64 over 8 beats):
-            "!r 64-8"
-
-    output message format:
-        "resonance <amount> <beats>"
-        "resonance 64 8"
-
-    returns:
-        single output message in an array
-*/
-function parseResonance(inputMessage){
-    return parseTwoParameters(inputMessage, "!r", "resonance");
-
-}
-
-/*
- parse !t - Decodes a request to change the tempo
-    input message format:
-        "!t <amount>-<beats> "
-            !t          = (constant) allows the Twitch bot to recognize this as a tempo change
-            <amount>    = 1-1000; the amount of beats per minute
-            <beats>     = beats; how many quarter notes to for the change to take place; 0 = immediately
-
-        Example (change the tempo to 88 bpm over 8 beats):
-            "!t 88-8"
-
-    output message format:
-        "userTempo <amount> <beats>"
-        "userTempo 88 8"
-
-    returns:
-        single output message in an array
-*/
-function parseTempo(inputMessage){
-
-    return parseTwoParameters(inputMessage, "!t", "userBpm", 1.0, 1000.0);
-
-}
-
-/*
- parse !s - Decodes a request to change the melodic control voltage slew amount
-    input message format:
-        "!s <millis>-<beats>"
-            !s          = (constant) allows the Twitch bot to recognize this as a slew amount change
-            <millis>    = 0-5000; the amount of slew time in milliseconds
-            <beats>     = beats; how many quarter notes to for the change to take place; 0 = immediately
-
-        Example (change the slew time to 300 over 5 beats):
-        "!s 300-5"
-
-    output message format:
-        "slew <amount> <beats>"
-        "slew 300 5"
-
-    returns:
-        single output message in an array
-
- */
-function parseSlew(inputMessage){
-
-    return parseTwoParameters(inputMessage, "!s", "slew", 0, 5000);
-
-}
-
-/*
- parse !y - Decodes a request to change the how much the LFO drives the frequency modulation
-    input message format:
-        "!y <amount>-<beats>"
-            !y          = (constant) allows the Twitch bot to recognize this as a frequency modulation
-                            amount change
-            <amount>    = 0-127; the amount of LFO to be applied to the PWM
-            <beats>     = beats; how many quarter notes to for the change to take place; 0 = immediately
-
-        Example (change the FM amount to 55 over 2 beats):
-        "!y 55-2"
-
-    output message format:
-        "fmAmount <amount> <beats>"
-        "fmAmount 55 2"
-
-    returns:
-        single output message in an array
-
- */
-function parseFmAmount(inputMessage){
-
-    return parseTwoParameters(inputMessage, "!y", "fmAmount");
-
-}
-
-/*
- parse !l - Decodes a request to change the low frequency oscillator (LFO) rate
-    input message format:
-        "!l <amount>-<beats>"
-            !l          = (constant) allows the Twitch bot to recognize this as LFO rate change
-            <amount>    = 0-127; the rate of the LFO; 0 = slow, 127 = fast
-            <beats>     = beats; how many quarter notes to for the change to take place; 0 = immediately
-
-        Example (change the LFO rate to 23 over 10 beats):
-        "!l 23-10"
-
-    output message format:
-        "lfoRate <amount> <beats>"
-        "lfoRate 23 10"
-
-    returns:
-        single output message in an array
-
- */
-function parseLfo(inputMessage){
-
-    return parseTwoParameters(inputMessage, "!l", "lfoRate");
-
-}
-
-/*
- parse !mario - Decodes a request to change any parameter mapped to it
-    input message format:
-        "!mario <amount>-<beats>"
-            !mario      = (constant) allows the Twitch bot to recognize this as parameter change
-            <amount>    = 0-127; the rate of the LFO; 0 = slow, 127 = fast
-            <beats>     = beats; how many quarter notes to for the change to take place; 0 = immediately
-
-        Example (change the parameter rate to 23 over 10 beats):
-        "!mario 23-10"
-
-    output message format:
-        "mario <amount> <beats>"
-        "mario 23 10"
-
-    returns:
-        single output message in an array
-
- */
-function parseMario(inputMessage){
-
-    return parseTwoParameters(inputMessage, "!mario", "mario", 0, 127);
-
-}
-
-/*
- parse !luigi - Decodes a request to change any parameter mapped to it
-    input message format:
-        "!luigi <amount>-<beats>"
-            !luigi      = (constant) allows the Twitch bot to recognize this as parameter change
-            <amount>    = 0-127; the rate of the LFO; 0 = slow, 127 = fast
-            <beats>     = beats; how many quarter notes to for the change to take place; 0 = immediately
-
-        Example (change the parameter rate to 23 over 10 beats):
-        "!luigi 23-10"
-
-    output message format:
-        "luigi <amount> <beats>"
-        "luigi 23 10"
-
-    returns:
-        single output message in an array
-
- */
-function parseLuigi(inputMessage){
-
-    return parseTwoParameters(inputMessage, "!luigi", "luigi", 0, 127);
-
-}
-
-/*
- parse !yoshi - Decodes a request to change any parameter mapped to it
-    input message format:
-        "!yoshi <amount>-<beats>"
-            !yoshi      = (constant) allows the Twitch bot to recognize this as parameter change
-            <amount>    = 0-127; the rate of the LFO; 0 = slow, 127 = fast
-            <beats>     = beats; how many quarter notes to for the change to take place; 0 = immediately
-
-        Example (change the parameter rate to 23 over 10 beats):
-        "!yoshi 23-10"
-
-    output message format:
-        "yoshi <amount> <beats>"
-        "yoshi 23 10"
-
-    returns:
-        single output message in an array
-
- */
-function parseYoshi(inputMessage){
-
-    return parseTwoParameters(inputMessage, "!yoshi", "yoshi", 0, 127);
-
-}
-
-/*
- parse !peach - Decodes a request to change any parameter mapped to it
-    input message format:
-        "!peach <amount>-<beats>"
-            !peach      = (constant) allows the Twitch bot to recognize this as parameter change
-            <amount>    = 0-127; the rate of the LFO; 0 = slow, 127 = fast
-            <beats>     = beats; how many quarter notes to for the change to take place; 0 = immediately
-
-        Example (change the parameter rate to 23 over 10 beats):
-        "!peach 23-10"
-
-    output message format:
-        "peach <amount> <beats>"
-        "peach 23 10"
-
-    returns:
-        single output message in an array
-
- */
-function parsePeach(inputMessage){
-
-    return parseTwoParameters(inputMessage, "!peach", "peach", 0, 127);
-
 }

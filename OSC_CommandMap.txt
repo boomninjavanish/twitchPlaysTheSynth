@@ -3,7 +3,7 @@ The following is a map of all OSC commands and their respective branches
 /tpts
     |- /twitchBot       [ parent; unused ]
     |       |- /errorMessage [ messages to be displayed to the max console; <errorMessageText> ]
-    |       ¿- 
+    |       ¿- /messageOut  [ single-line messages to be displayed within the main app; <messageText> ]
     |
     |- /paramamapper    [ the commands to change the mapped parameter; <mapperName> <value> <beats>]
     |       ¿- /remind      [ bang to send mapper names to script again; <bang> ]
