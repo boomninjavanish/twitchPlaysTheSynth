@@ -33,6 +33,11 @@ const twitchApiOptions = {
 // for making mappers in paramamapper
 let mapperNames = [];
 
+// for keeping within midi pitch number range
+let midiNumberMin = 20;
+let midiNumberMax = 110;
+let midiNumberTrimType = "";
+
 // tell us the node version
 max.post(`Node version: ${process.version}`);
 
@@ -57,7 +62,7 @@ function onMessageHandler (channel, userstate, msg, self) {
         max.post(`Parsing ${commandName}...`);
 
         // parse the command
-        let outputMessage = parser.parse(commandName, mapperNames);
+        let outputMessage = parser.parse(commandName, mapperNames, midiNumberMin, midiNumberMax, midiNumberTrimType);
 
         // if no output messages are returned in the parser, then something is wrong
         if(outputMessage.length === 0){
@@ -156,6 +161,25 @@ max.addHandler("twitchSettings", (inputMessage) => {
     // twitchChan
     if(settingsKey[0] === "twitchChan"){
         twitchApiOptions.channels[0] = inputMessage.replace(keyPlusSpaceRegex, "");
+    }
+
+    // midi range: minimum allowed 
+    if(settingsKey[0] === "midiNumberMin"){
+        midiNumberMin = parseInt(
+            inputMessage.replace(keyPlusSpaceRegex, "")
+            );
+    }
+
+    // midi range: maximum allowed 
+    if(settingsKey[0] === "midiNumberMax"){
+        midiNumberMax = parseInt(
+            inputMessage.replace(keyPlusSpaceRegex, "")
+            );
+    }
+
+    // midi range: trimType
+    if(settingsKey[0] === "midiNumberTrimType"){
+        midiNumberTrimType = inputMessage.replace(keyPlusSpaceRegex, "");
     }
 });
 

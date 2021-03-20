@@ -10,7 +10,14 @@
 
 
  */
-exports.parse = function (inputMessage, mapperNames, tonalCenter = 48.0) {
+exports.parse = function (
+    inputMessage, 
+    mapperNames, 
+    midiNumberMin = 20, 
+    midiNumberMax = 110, 
+    midiNumberTrimType = "",
+    tonalCenter = 48.0 
+) {
     // find which message is being parsed
     let outputMessage = []; // the Max formatted output
     let typeRegex = /^![A-Za-z0-9-]+/; // the inputKey with exclamation point (include all letters, numbers, and hyphens)
@@ -87,8 +94,8 @@ const extractValues = function (inputMessage){
     // used to find the value before the brackets []
     let valueRegex = /\s([+-]?(\.)?\d+(\.\d+)?)/g; 
 
-    // used to find the value inside the brackets
-    let beatsRegex = /\[([+-]?\d+(\.\d+)?)\]/g; 
+    // used to find the value inside the brackets or parentheses
+    let beatsRegex = /(\[|\()([+-]?\d+(\.\d+)?)(\]|\))/g; 
 
     // object array to store the matching values to be returned
     let extractedValues = [];
@@ -252,7 +259,7 @@ const parseSequencerNumber = function (inputMessage){
     returns:
         single output message in an array
 */
-const parseTwoParameters= function (inputMessage, inputKey, outputKey, min = 0, max = 127){
+const parseTwoParameters= function (inputMessage, inputKey, outputKey, min = 0, max = 100){
     let outputMessage = []; // the Max formatted output array
     let median = parseInt((min + max) / 2); // used to communicate range errors
 
@@ -361,6 +368,25 @@ const parseMelody = function (inputMessage, tonalCenter){
         for(let index in melodyValues.val){
             // adjust pitch from previous pitch
             pitch += melodyValues.val[index];
+
+             // keep in sane midi range
+            // if value goes out of range, have it wrap around
+            if(midiNumberTrimType === "wrap"){
+                if(pitch < midiNumberMin)
+                    pitch = midiNumberMax - (midiNumberMin - pitch) % (midiNumberMax - midiNumberMin);
+
+                if(pitch > midiNumberMax)
+                    pitch = midiNumberMin + (pitch - midiNumberMin) % (midiNumberMax - midiNumberMin);
+            }
+
+            // if value go out of range, have it "smash" into the min or max
+            if(midiNumberTrimType === "wall"){
+                if(pitch < midiNumberMin)
+                pitch = midiNumberMin;
+
+                if(pitch > midiNumberMax)
+                    pitch = midiNumberMax;
+            }
 
             // output the data to be placed in the melody coll
             outputMessage.push(
