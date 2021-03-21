@@ -31,7 +31,7 @@ exports.parse = function (
 
         // parse melody if '!m'; everything else is considered to be paramamapper or error
         if(matches[0].match(melodyRegex))
-            outputMessage = parseMelody(inputMessage, tonalCenter);
+            outputMessage = parseMelody(inputMessage, tonalCenter, midiNumberMin, midiNumberMax, midiNumberTrimType);
 
         else if(mapperNames.includes(noAhhh)){
             outputMessage = parseTwoParameters(inputMessage, matches[0], `/tpts/paramamapper ${noAhhh}`);
@@ -188,46 +188,6 @@ const extractValues = function (inputMessage){
 }
 
 /*
- parseSequencerNumber - determines the sequencer number and strips the message identifier
-    from the message.
-
- inputMessage: the message given by the user; must have a message identifier that contains
-    an exclamation point followed by an alphabetic identifier followed by a number. Examples:
-        !m2 or !bongo12 or !c4
-
-  returns: the input message that has been stripped of the message identifier and the
-    number that indicates which sequencer the message is destined to receive; if
-    the sequencer number cannot be found, return NaN
- */
-const parseSequencerNumber = function (inputMessage){
-    let typeRegex = /^![a-zA-Z]+/;
-    let numberRegex = /^\d+/;
-    let numberSpaceRegex = /^\d+\s/;
-    let sequencerNumber;
-
-    // remove messageType
-    let strippedMessage = inputMessage.replace(typeRegex, '');
-
-    // find which melody seq. number
-    let sequencerNumberArr = strippedMessage.match(numberRegex);
-
-    // set sequencer number to 1 if no number indicated
-    if (sequencerNumberArr) 
-        sequencerNumber = sequencerNumberArr[0];
-    else
-        sequencerNumber = 1;
-    
-
-    // strip out number and first space
-    strippedMessage = strippedMessage.replace(numberSpaceRegex, '');
-
-    return {
-        strippedMessage: strippedMessage,
-        sequencerNumber: parseInt(sequencerNumber)
-    }
-}
-
-/*
  parse two parameters - parses a input key followed by two numeric parameters; one for the amount of change
     the other for the duration in beats for the change to glide towards in a linear ramp
 
@@ -309,10 +269,9 @@ const parseTwoParameters= function (inputMessage, inputKey, outputKey, min = 0, 
 /*
  parse !m - Decodes a melody
     input message format:
-        "!m<seq#> <u/d>-<interval>-<dur> <u/d>-<interval>-<dur> <u/d>-<interval>-<dur>..."
+        "!m<seq#> <interval>[<dur>] <interval>[<dur>] <interval>[<dur>]..."
             !m          = (constant) allows the Twitch bot to recognize this as a melody
             <seq#>      = optional; the sequencer to the send melody
-            <u/d>       = ("u" | "d") up or down; the direction the note will travel
             <interval>  = the amount of half steps the note will travel; this
                             number must not exceed the bounds of the midi chart.
             <dur>       = duration multiplier (0.002 - 6.0); the note will be held for a
@@ -338,10 +297,10 @@ const parseTwoParameters= function (inputMessage, inputKey, outputKey, min = 0, 
                                 eight note triplet   = 0.333
 
         Example (major scale in whole notes intended for sequencer number one):
-            "!m1 u-0-4 u-2-4 u-2-4 u-1-4 u-2-4 u-2-4 u-2-4 u-1-4"
+            "!m1 0[4] 2[4] 2[4] 1[4] 2[4] 2[4] 2[4] 1[4]"
 
         Example (Laura's melody):
-            "!m1 u-10-0.333 d-6-0.333 d-4-0.333 u-10-0.666 d-3-0.666 u-8-0.666 u-9-2 d-5-2 d-3-4"
+            "!m1 10[0.333] -6[0.333] -4[0.333] 10[0.666] -3[0.666] 8[0.666] 9[2] -5[2] -3[4]"
 
     output message format:
         "noteData <seq#> <note> <vel> <dur>"
@@ -350,7 +309,7 @@ const parseTwoParameters= function (inputMessage, inputKey, outputKey, min = 0, 
     returns:
         multiple output messages in an array
 */
-const parseMelody = function (inputMessage, tonalCenter){
+const parseMelody = function (inputMessage, tonalCenter, midiNumberMin, midiNumberMax, midiNumberTrimType){
     let outputMessage = []; // the Max formatted output array
 
     // get the values for the melody
@@ -416,55 +375,5 @@ const parseMelody = function (inputMessage, tonalCenter){
     outputMessage.push("/tpts/melodySeq/userMelody " + melodyValues.seqNumber + " " + inputMessage);
 
     // return all of the messages in an array
-    return outputMessage;
-}
-
-/*
- parse !c - Decodes a request to offset the tonal center
-    input message format:
-        "!c <interval>"
-            !c          = (constant) allows the Twitch bot to recognize this as a tonal center change
-            <interval>  = the amount of half steps the tonal center will travel; this
-                            number must not exceed the bounds of the midi chart.
-
-        Example (move the tonal center a 5th above the current):
-            "!c 8"
-
-    output message format:
-        "tonalOffset <seq #> <amount>"
-        "tonalOffset 1 8"
-
-    returns:
-        single output message in an array
-*/
-const parseTonalOffset = function (inputMessage){
-    let outputMessage = []; // the Max formatted output array
-
-    // get sequencer number and strip identifier
-    let parsedSequenceNumber = parseSequencerNumber(inputMessage);
-
-    // error if no number is found
-    if(isNaN(parsedSequenceNumber.sequencerNumber)){
-        outputMessage.push("/tpts/twitchBot/errorMessage '!c: missing melody sequencer number. For example, use !c2 1 " +
-            "to move sequencer number 2 up a step.'");
-        return outputMessage;
-    }
-
-    let seqNumber = parsedSequenceNumber.sequencerNumber;
-    let strippedMessage = parsedSequenceNumber.strippedMessage;
-
-    inputMessage = inputMessage.slice(3); // remove messageType
-
-    // does the tonal center have invalid characters?
-    for(let character of strippedMessage){
-        if( !(character === '-' || character === '.' || /^\d$/.test(character)) ){
-            // make error and return
-            outputMessage.push("/tpts/twitchBot/errorMessage '!c: " + inputMessage + " is not a valid tonal center change'");
-            return outputMessage;
-        }
-    }
-
-    // return message in an array
-    outputMessage.push("/tpts/melodySeq/tonalOffset " + seqNumber + " " + strippedMessage);
     return outputMessage;
 }

@@ -64,6 +64,7 @@
     - min midi number
     - max midi number
     - midi trim type
-        - "wrap" wraps any number out of range back into the range
-        - "wall" 
+        - "wrap" wraps any number out of range back into the range (default)
+        - "wall" has has the value quantize to the nearest edge of the range (like it is hitting a wall that contains the midi notes)
+        - more algorithms may be added in the future as needed
 - [bug] range is now 0-100 for paramamapper parameters; resolves #55
