@@ -21,7 +21,7 @@
 		"gridsnaponopen" : 1,
 		"objectsnaponopen" : 1,
 		"statusbarvisible" : 2,
-		"toolbarvisible" : 1,
+		"toolbarvisible" : 0,
 		"lefttoolbarpinned" : 0,
 		"toptoolbarpinned" : 0,
 		"righttoolbarpinned" : 0,
@@ -29,7 +29,7 @@
 		"toolbars_unpinned_last_save" : 0,
 		"tallnewobj" : 0,
 		"boxanimatetime" : 200,
-		"enablehscroll" : 1,
+		"enablehscroll" : 0,
 		"enablevscroll" : 1,
 		"devicewidth" : 673.0,
 		"description" : "",
@@ -692,7 +692,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 137.0, 125.0, 1493.0, 1275.0 ],
+						"rect" : [ 137.0, 125.0, 673.0, 415.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 1,
 						"default_fontsize" : 12.0,
@@ -724,133 +724,44 @@
 						"title" : "Settings",
 						"boxes" : [ 							{
 								"box" : 								{
-									"id" : "obj-47",
-									"maxclass" : "newobj",
-									"numinlets" : 3,
-									"numoutlets" : 3,
-									"outlettype" : [ "bang", "bang", "" ],
-									"patching_rect" : [ 462.0, 791.0, 44.0, 22.0 ],
-									"text" : "sel 0 1"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-51",
-									"maxclass" : "message",
-									"numinlets" : 2,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 462.0, 850.0, 121.0, 22.0 ],
-									"text" : "textcolor 0. 0. 0. 1."
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-52",
-									"maxclass" : "message",
-									"numinlets" : 2,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 616.0, 850.0, 127.0, 22.0 ],
-									"text" : "textcolor 0.98 0. 0. 0.5"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"activebgoncolor" : [ 0.98, 0.0, 0.0, 1.0 ],
-									"id" : "obj-53",
-									"lcdcolor" : [ 0.98, 0.0, 0.0, 1.0 ],
-									"maxclass" : "live.text",
-									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "", "" ],
-									"parameter_enable" : 1,
-									"patching_rect" : [ 462.0, 760.0, 44.0, 15.0 ],
-									"presentation" : 1,
-									"presentation_rect" : [ 22.0, 229.5, 19.0, 15.0 ],
-									"saved_attribute_attributes" : 									{
-										"valueof" : 										{
-											"parameter_enum" : [ "val1", "val2" ],
-											"parameter_longname" : "live.text[7]",
-											"parameter_mmax" : 1,
-											"parameter_shortname" : "live.text",
-											"parameter_type" : 2
-										}
-
-									}
-,
-									"text" : "?",
-									"texton" : "?",
-									"varname" : "live.text[1]"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-46",
-									"maxclass" : "newobj",
-									"numinlets" : 3,
-									"numoutlets" : 3,
-									"outlettype" : [ "bang", "bang", "" ],
-									"patching_rect" : [ 857.0, 791.0, 44.0, 22.0 ],
-									"text" : "sel 0 1"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-43",
-									"maxclass" : "message",
-									"numinlets" : 2,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 857.0, 850.0, 121.0, 22.0 ],
-									"text" : "textcolor 0. 0. 0. 1."
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"id" : "obj-42",
-									"maxclass" : "message",
-									"numinlets" : 2,
-									"numoutlets" : 1,
-									"outlettype" : [ "" ],
-									"patching_rect" : [ 1011.0, 850.0, 127.0, 22.0 ],
-									"text" : "textcolor 0.98 0. 0. 0.5"
-								}
-
-							}
-, 							{
-								"box" : 								{
-									"activebgoncolor" : [ 0.98, 0.0, 0.0, 1.0 ],
+									"fontname" : "Ableton Sans Bold",
 									"id" : "obj-35",
-									"lcdcolor" : [ 0.98, 0.0, 0.0, 1.0 ],
-									"maxclass" : "live.text",
+									"maxclass" : "comment",
 									"numinlets" : 1,
-									"numoutlets" : 2,
-									"outlettype" : [ "", "" ],
-									"parameter_enable" : 1,
-									"patching_rect" : [ 857.0, 760.0, 44.0, 15.0 ],
+									"numoutlets" : 0,
+									"patching_rect" : [ 14.0, 541.0, 433.0, 21.0 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 22.0, 331.5, 19.0, 15.0 ],
-									"saved_attribute_attributes" : 									{
-										"valueof" : 										{
-											"parameter_enum" : [ "val1", "val2" ],
-											"parameter_longname" : "live.text",
-											"parameter_mmax" : 1,
-											"parameter_shortname" : "live.text",
-											"parameter_type" : 2
-										}
+									"presentation_rect" : [ 16.0, 541.0, 552.0, 21.0 ],
+									"textcolor" : [ 0.98, 0.0, 0.0, 0.5 ]
+								}
 
-									}
-,
-									"text" : "?",
-									"texton" : "?",
-									"varname" : "live.text"
+							}
+, 							{
+								"box" : 								{
+									"id" : "obj-36",
+									"maxclass" : "message",
+									"numinlets" : 2,
+									"numoutlets" : 1,
+									"outlettype" : [ "" ],
+									"patching_rect" : [ 1070.0, 624.0, 284.0, 22.0 ],
+									"text" : "twitchSettings \"midiNumberTrimType wrap\""
+								}
+
+							}
+, 							{
+								"box" : 								{
+									"fontname" : "Ableton Sans Bold",
+									"id" : "obj-20",
+									"linecount" : 6,
+									"maxclass" : "comment",
+									"numinlets" : 1,
+									"numoutlets" : 0,
+									"patching_rect" : [ 15.0, 123.0, 103.0, 93.0 ],
+									"presentation" : 1,
+									"presentation_linecount" : 2,
+									"presentation_rect" : [ 16.0, 115.0, 552.0, 35.0 ],
+									"text" : "Get your OAuth password from here:\n     https://twitchapps.com/tmi/",
+									"textcolor" : [ 0.98, 0.0, 0.0, 0.5 ]
 								}
 
 							}
@@ -864,10 +775,9 @@
 									"numoutlets" : 0,
 									"patching_rect" : [ 988.0, 318.0, 97.0, 35.0 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 247.0, 373.0, 145.0, 21.0 ],
+									"presentation_rect" : [ 336.0, 490.0, 145.0, 21.0 ],
 									"text" : "Out of Range Handling",
-									"textcolor" : [ 0.98, 0.0, 0.0, 1.0 ],
-									"textjustification" : 2
+									"textcolor" : [ 0.98, 0.0, 0.0, 1.0 ]
 								}
 
 							}
@@ -880,10 +790,9 @@
 									"numoutlets" : 0,
 									"patching_rect" : [ 715.0, 449.0, 97.0, 21.0 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 68.0, 399.0, 108.0, 21.0 ],
+									"presentation_rect" : [ 64.0, 516.0, 108.0, 21.0 ],
 									"text" : "Maximum",
-									"textcolor" : [ 0.98, 0.0, 0.0, 1.0 ],
-									"textjustification" : 2
+									"textcolor" : [ 0.98, 0.0, 0.0, 1.0 ]
 								}
 
 							}
@@ -896,10 +805,9 @@
 									"numoutlets" : 0,
 									"patching_rect" : [ 528.0, 449.0, 97.0, 21.0 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 68.0, 373.0, 108.0, 21.0 ],
+									"presentation_rect" : [ 64.0, 490.0, 108.0, 21.0 ],
 									"text" : "Minimum",
-									"textcolor" : [ 0.98, 0.0, 0.0, 1.0 ],
-									"textjustification" : 2
+									"textcolor" : [ 0.98, 0.0, 0.0, 1.0 ]
 								}
 
 							}
@@ -913,7 +821,7 @@
 									"numoutlets" : 0,
 									"patching_rect" : [ 17.0, 300.0, 182.0, 30.0 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 49.0, 324.0, 174.0, 30.0 ],
+									"presentation_rect" : [ 16.0, 369.0, 174.0, 30.0 ],
 									"text" : "MIDI Note Range",
 									"textcolor" : [ 1.0, 1.0, 1.0, 1.0 ]
 								}
@@ -926,7 +834,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 1011.0, 556.0, 170.0, 22.0 ],
+									"patching_rect" : [ 1051.5, 556.0, 170.0, 22.0 ],
 									"text" : "prepend midiNumberTrimType"
 								}
 
@@ -958,7 +866,7 @@
 									"parameter_enable" : 1,
 									"patching_rect" : [ 1011.0, 461.0, 100.0, 20.0 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 400.0, 373.0, 100.0, 20.0 ],
+									"presentation_rect" : [ 232.0, 490.0, 100.0, 20.0 ],
 									"saved_attribute_attributes" : 									{
 										"valueof" : 										{
 											"parameter_enum" : [ "wrap", "wall" ],
@@ -1033,7 +941,7 @@
 									"parameter_enable" : 1,
 									"patching_rect" : [ 692.0, 452.0, 44.0, 15.0 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 184.0, 402.0, 44.0, 15.0 ],
+									"presentation_rect" : [ 16.0, 519.0, 44.0, 15.0 ],
 									"saved_attribute_attributes" : 									{
 										"valueof" : 										{
 											"parameter_longname" : "live.numbox[1]",
@@ -1058,7 +966,7 @@
 									"parameter_enable" : 1,
 									"patching_rect" : [ 513.0, 452.0, 44.0, 15.0 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 184.0, 376.0, 44.0, 15.0 ],
+									"presentation_rect" : [ 16.0, 493.0, 44.0, 15.0 ],
 									"saved_attribute_attributes" : 									{
 										"valueof" : 										{
 											"parameter_longname" : "live.numbox",
@@ -1083,7 +991,7 @@
 									"numoutlets" : 0,
 									"patching_rect" : [ 543.0, 92.5, 182.0, 30.0 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 49.0, 222.0, 134.0, 30.0 ],
+									"presentation_rect" : [ 16.0, 262.0, 134.0, 30.0 ],
 									"text" : "Auto-Restart",
 									"textcolor" : [ 1.0, 1.0, 1.0, 1.0 ]
 								}
@@ -1099,9 +1007,9 @@
 									"numoutlets" : 0,
 									"patching_rect" : [ 462.0, 957.0, 103.0, 79.0 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 188.0, 229.5, 411.0, 21.0 ],
+									"presentation_rect" : [ 16.0, 292.0, 552.0, 21.0 ],
 									"text" : "Restarts the Twitch bot  automatically in five seconds if node.js crashes.",
-									"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
+									"textcolor" : [ 0.98, 0.0, 0.0, 0.5 ]
 								}
 
 							}
@@ -1129,7 +1037,7 @@
 									"parameter_enable" : 1,
 									"patching_rect" : [ 664.0, 169.375, 77.5, 14.75 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 184.0, 273.0, 69.0, 18.0 ],
+									"presentation_rect" : [ 16.0, 325.0, 69.0, 18.0 ],
 									"saved_attribute_attributes" : 									{
 										"valueof" : 										{
 											"parameter_enum" : [ "val1", "val2" ],
@@ -1341,7 +1249,7 @@
 									"numoutlets" : 0,
 									"patching_rect" : [ 14.0, 100.0, 125.0, 30.0 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 49.0, 89.0, 118.0, 30.0 ],
+									"presentation_rect" : [ 16.0, 84.0, 118.0, 30.0 ],
 									"text" : "Twitch Bot",
 									"textcolor" : [ 1.0, 1.0, 1.0, 1.0 ]
 								}
@@ -1356,10 +1264,9 @@
 									"numoutlets" : 0,
 									"patching_rect" : [ 280.0, 381.0, 103.0, 21.0 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 68.0, 182.0, 111.0, 21.0 ],
+									"presentation_rect" : [ 457.0, 218.0, 111.0, 21.0 ],
 									"text" : "Twitch Channel",
-									"textcolor" : [ 0.98, 0.0, 0.0, 1.0 ],
-									"textjustification" : 2
+									"textcolor" : [ 0.98, 0.0, 0.0, 1.0 ]
 								}
 
 							}
@@ -1372,10 +1279,9 @@
 									"numoutlets" : 0,
 									"patching_rect" : [ 142.0, 381.0, 100.0, 21.0 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 68.0, 156.0, 109.0, 21.0 ],
+									"presentation_rect" : [ 457.0, 192.0, 109.0, 21.0 ],
 									"text" : "Bot User Name",
-									"textcolor" : [ 0.98, 0.0, 0.0, 1.0 ],
-									"textjustification" : 2
+									"textcolor" : [ 0.98, 0.0, 0.0, 1.0 ]
 								}
 
 							}
@@ -1383,15 +1289,15 @@
 								"box" : 								{
 									"fontname" : "Ableton Sans Bold",
 									"id" : "obj-31",
+									"linecount" : 2,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 14.0, 378.0, 97.0, 21.0 ],
+									"patching_rect" : [ 14.0, 378.0, 97.0, 35.0 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 68.0, 131.0, 108.0, 21.0 ],
-									"text" : "API Key",
-									"textcolor" : [ 0.98, 0.0, 0.0, 1.0 ],
-									"textjustification" : 2
+									"presentation_rect" : [ 457.0, 167.0, 108.0, 21.0 ],
+									"text" : "OAuth Password",
+									"textcolor" : [ 0.98, 0.0, 0.0, 1.0 ]
 								}
 
 							}
@@ -1406,7 +1312,7 @@
 									"parameter_enable" : 1,
 									"patching_rect" : [ 280.0, 403.0, 99.0, 50.0 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 184.0, 182.0, 436.0, 21.0 ],
+									"presentation_rect" : [ 16.0, 218.0, 436.0, 21.0 ],
 									"saved_attribute_attributes" : 									{
 										"valueof" : 										{
 											"parameter_invisible" : 1,
@@ -1433,7 +1339,7 @@
 									"parameter_enable" : 1,
 									"patching_rect" : [ 142.0, 403.0, 99.0, 50.0 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 184.0, 156.0, 436.0, 21.0 ],
+									"presentation_rect" : [ 16.0, 192.0, 436.0, 21.0 ],
 									"saved_attribute_attributes" : 									{
 										"valueof" : 										{
 											"parameter_invisible" : 1,
@@ -1462,7 +1368,7 @@
 									"parameter_enable" : 1,
 									"patching_rect" : [ 12.0, 403.0, 98.0, 50.0 ],
 									"presentation" : 1,
-									"presentation_rect" : [ 184.0, 131.0, 436.0, 21.0 ],
+									"presentation_rect" : [ 16.0, 167.0, 436.0, 21.0 ],
 									"saved_attribute_attributes" : 									{
 										"valueof" : 										{
 											"parameter_invisible" : 1,
@@ -1482,16 +1388,16 @@
 								"box" : 								{
 									"fontname" : "Ableton Sans Bold",
 									"id" : "obj-34",
-									"linecount" : 11,
+									"linecount" : 6,
 									"maxclass" : "comment",
 									"numinlets" : 1,
 									"numoutlets" : 0,
-									"patching_rect" : [ 857.0, 957.0, 433.0, 165.0 ],
+									"patching_rect" : [ 462.0, 852.0, 433.0, 93.0 ],
 									"presentation" : 1,
-									"presentation_linecount" : 11,
-									"presentation_rect" : [ 225.0, 318.0, 390.0, 165.0 ],
-									"text" : "Sets the limits of how high or low the pitch the melody sequencer will  play. Choosing a specific out of range handling algorithm will determine what value the out of range number becomes:\n\n\n\n\n\n    \nwrap:  the value will wrap around to the opposite side of the range.   \nwall:    the value will be changed to the miniumum or maximum value ",
-									"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
+									"presentation_linecount" : 5,
+									"presentation_rect" : [ 16.0, 398.0, 552.0, 79.0 ],
+									"text" : "Sets the limits of how high or low the pitch the melody sequencer will  play. Choosing a specific out of range handling algorithm will determine what value the out of range number becomes:\n  \n    wrap:  the value will wrap around to the opposite side of the range.   \n    wall:    the value will be changed to the miniumum or maximum value ",
+									"textcolor" : [ 0.98, 0.0, 0.0, 0.5 ]
 								}
 
 							}
@@ -1506,6 +1412,15 @@
 , 							{
 								"patchline" : 								{
 									"destination" : [ "obj-16", 0 ],
+									"order" : 1,
+									"source" : [ "obj-10", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-36", 1 ],
+									"order" : 0,
 									"source" : [ "obj-10", 0 ]
 								}
 
@@ -1620,14 +1535,14 @@
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-10", 0 ],
+									"destination" : [ "obj-11", 0 ],
 									"source" : [ "obj-30", 0 ]
 								}
 
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-10", 0 ],
+									"destination" : [ "obj-11", 0 ],
 									"source" : [ "obj-32", 0 ]
 								}
 
@@ -1635,14 +1550,7 @@
 , 							{
 								"patchline" : 								{
 									"destination" : [ "obj-49", 0 ],
-									"source" : [ "obj-33", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-46", 0 ],
-									"source" : [ "obj-35", 0 ]
+									"source" : [ "obj-33", 1 ]
 								}
 
 							}
@@ -1655,48 +1563,6 @@
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-34", 0 ],
-									"source" : [ "obj-42", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-34", 0 ],
-									"source" : [ "obj-43", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-42", 0 ],
-									"source" : [ "obj-46", 1 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-43", 0 ],
-									"source" : [ "obj-46", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-51", 0 ],
-									"source" : [ "obj-47", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-52", 0 ],
-									"source" : [ "obj-47", 1 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
 									"destination" : [ "obj-33", 0 ],
 									"source" : [ "obj-48", 0 ]
 								}
@@ -1704,7 +1570,7 @@
 							}
 , 							{
 								"patchline" : 								{
-									"destination" : [ "obj-10", 0 ],
+									"destination" : [ "obj-11", 0 ],
 									"source" : [ "obj-49", 0 ]
 								}
 
@@ -1713,27 +1579,6 @@
 								"patchline" : 								{
 									"destination" : [ "obj-17", 0 ],
 									"source" : [ "obj-5", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-24", 0 ],
-									"source" : [ "obj-51", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-24", 0 ],
-									"source" : [ "obj-52", 0 ]
-								}
-
-							}
-, 							{
-								"patchline" : 								{
-									"destination" : [ "obj-47", 0 ],
-									"source" : [ "obj-53", 0 ]
 								}
 
 							}
@@ -3033,6 +2878,8 @@
 									"saved_object_attributes" : 									{
 										"autostart" : 0,
 										"defer" : 0,
+										"node_bin_path" : "",
+										"npm_bin_path" : "",
 										"watch" : 0
 									}
 ,
@@ -3953,10 +3800,8 @@
 			"obj-22::obj-21" : [ "live.numbox", "live.numbox", 0 ],
 			"obj-22::obj-22" : [ "live.numbox[1]", "live.numbox", 0 ],
 			"obj-22::obj-33" : [ "live.tab", "live.tab", 0 ],
-			"obj-22::obj-35" : [ "live.text", "live.text", 0 ],
 			"obj-22::obj-4" : [ "tptsApiKey", "textedit", 0 ],
 			"obj-22::obj-5" : [ "tptsBotUserName", "textedit[1]", 0 ],
-			"obj-22::obj-53" : [ "live.text[7]", "live.text", 0 ],
 			"obj-22::obj-57" : [ "live.text[6]", "live.text", 0 ],
 			"obj-22::obj-6" : [ "tptsTwitchChannel", "textedit[2]", 0 ],
 			"obj-85" : [ "live.text[1]", "live.text[1]", 0 ],

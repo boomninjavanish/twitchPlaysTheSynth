@@ -15,7 +15,7 @@ exports.parse = function (
     mapperNames, 
     midiNumberMin = 20, 
     midiNumberMax = 110, 
-    midiNumberTrimType = "",
+    midiNumberTrimType = "none",
     tonalCenter = 48.0 
 ) {
     // find which message is being parsed
@@ -162,8 +162,8 @@ const extractValues = function (inputMessage){
             for(let i in beatsMatchesChecked){
                 beatsMatchesChecked[i] = parseFloat(
                     beatsMatchesChecked[i]
-                        .replace(/\[/, "")
-                        .replace(/\]/, "")
+                        .replace(/\[|\(/, "")
+                        .replace(/\]|\)/, "")
                 );
             }
                         
@@ -309,7 +309,7 @@ const parseTwoParameters= function (inputMessage, inputKey, outputKey, min = 0, 
     returns:
         multiple output messages in an array
 */
-const parseMelody = function (inputMessage, tonalCenter, midiNumberMin, midiNumberMax, midiNumberTrimType){
+const parseMelody = function (inputMessage, tonalCenter, midiNumberMin, midiNumberMax, midiNumberTrimType){    
     let outputMessage = []; // the Max formatted output array
 
     // get the values for the melody
