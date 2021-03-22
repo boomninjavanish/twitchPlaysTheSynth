@@ -57,7 +57,7 @@
 - added error catching to client.whisper() to prevent crashing and burning; resolves #50
 - added auto-restart function in settings page: setting that restarts the node script automatically within five seconds when the script hard crashes or user accidentally presses disconnect; resolves #47
 
-## v0.8 (pre-release) (2021-3-22)
+## v1.0 (2021-3-22)
 - [feature] parentheses may now be used instead of or in addition to brackets; resolves #53
 - [feature] midi note numbers are now kept in a sane range; resolves #51; 
     the following options were added to the settings tab in tpts.main:
