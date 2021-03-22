@@ -56,3 +56,16 @@
 - cleaned up and made code more java-script friendly
 - added error catching to client.whisper() to prevent crashing and burning; resolves #50
 - added auto-restart function in settings page: setting that restarts the node script automatically within five seconds when the script hard crashes or user accidentally presses disconnect; resolves #47
+
+## v0.8 (pre-release) (2021-3-22)
+- [feature] parentheses may now be used instead of or in addition to brackets; resolves #53
+- [feature] midi note numbers are now kept in a sane range; resolves #51; 
+    the following options were added to the settings tab in tpts.main:
+    - min midi number
+    - max midi number
+    - midi trim type
+        - "wrap" wraps any number out of range back into the range (default)
+        - "wall" has has the value quantize to the nearest edge of the range (like it is hitting a wall that contains the midi notes)
+        - more algorithms may be added in the future as needed
+- [bug] range is now 0-100 for paramamapper parameters; resolves #55
+- [enhancement] change some wording and formatting in the settings page in tpts.main 
