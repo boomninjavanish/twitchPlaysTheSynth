@@ -31,6 +31,7 @@ const twitchApiOptions = {
 };
 
 // for making mappers in paramamapper
+// each mapper name in the array has the following elements: name & access
 let mapperNames = [];
 
 // for keeping within midi pitch number range
@@ -196,20 +197,48 @@ max.addHandler("input", (inputMessage) => {
 });
 
 // register new mapper names
-max.addHandler("mapperName", (mapperName) => {
-    // do not register if already there
-    if(!mapperNames.includes(mapperName)){
+max.addHandler("mapperName", (data) => {
+    // parse incoming data into elements
+    let dataArr = data.split(" ");
+
+    let mapperName = { 
+        name: dataArr[0],
+        access: dataArr[1]
+    };
+
+    // make public if access not defined
+    if(!mapperName.access)
+        mapperName.access = "public";
+    
+    // register if not already registered
+    if(!mapperNames.find(mTemp => mTemp.name === mapperName.name))
         mapperNames.push(mapperName);
-    }
 });
 
 // deletes mapper names
 max.addHandler("deleteMapperName", (mapperName) => {
-    // find it
-    let indexToDelete = mapperNames.indexOf(mapperName);
+   // find it in the array
+   let indexToDelete = mapperNames.findIndex(mTemp => mTemp.name === mapperName);
 
-    // if found, delete
-    if(indexToDelete > -1){
-        mapperNames.splice(indexToDelete);
+   // if found, delete
+   if(indexToDelete > -1)
+       mapperNames.splice(indexToDelete, 1);
+});
+
+// changes the access level of a mapper name
+max.addHandler("changeMapperNameAccess", (data) => {
+    // parse incoming data into elements
+    let dataArr = data.split(" ");
+
+    let mapperName = {
+        name: dataArr[0],
+        access: dataArr[1]
     }
+
+    // find the element in the array
+    let indexToChange = mapperNames.findIndex(mTemp => mTemp.name === mapperName);
+
+    // change access level
+    mapperNames[indexToChange].access = mapperName.access;
+
 });
