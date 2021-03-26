@@ -69,3 +69,14 @@
         - more algorithms may be added in the future as needed
 - [bug] range is now 0-100 for paramamapper parameters; resolves #55
 - [enhancement] change some wording and formatting in the settings page in tpts.main 
+
+## v1.1 (2021-3-25)
+- [feature] paramamapper commands may now be restricted to the following access levels. Users in upper levels may access may access mappers below their level while users in lower levels may only use mappers for their level and below; resolves #59; resolves #7
+    - "tpts": the broadcaster
+    - "admin": administrators or global moderators
+    - "mod": moderators
+    - "sub": subscribers
+    - "public": everyone else
+- [bug] melody sequencers now have a limit of how small a note beat duration may be; if beat is less that 0.1 it is set to 0.1; resolves #49
+- [enhancement] updated tmi.js from v1.5.0 to v1.7.3
+- [housekeeping] javascript has been consolidated to a single file; was having trouble with importing a class into the main file
