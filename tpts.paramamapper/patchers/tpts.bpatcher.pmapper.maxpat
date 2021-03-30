@@ -207,7 +207,7 @@
 					"fontname" : "Ableton Sans Medium",
 					"fontsize" : 10.0,
 					"id" : "obj-42",
-					"items" : [ "public", ",", "sub", ",", "mod", ",", "admin", ",", "tpts" ],
+					"items" : [ "public", ",", "sub", ",", "mod", ",", "bcaster" ],
 					"maxclass" : "umenu",
 					"numinlets" : 1,
 					"numoutlets" : 3,

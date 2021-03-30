@@ -11,7 +11,7 @@
 */
 
 // Verbose mode for troubleshooting
-let verbose = true;
+let isVerbose = true;
 
 // https://docs.cycling74.com/nodeformax/api/module-max-api.html
 const max = require('max-api');
@@ -115,13 +115,12 @@ const parse = function (
                 "public",   // 0
                 "sub",      // 1
                 "mod",      // 2
-                "admin",    // 3
-                "tpts"      // 4
+                "bcaster"   // 3
             ];
             let userScore = levels.indexOf(userAccessLevel);
             let mapperScore = levels.indexOf(mappers[mapperIndex].access);
 
-            if(verbose) max.post(`userScore: ${userScore}; mapperScore: ${mapperScore}`);
+            if(isVerbose) max.post(`userScore: ${userScore}; mapperScore: ${mapperScore}`);
             
             // compare the scores to give tiered access
             if(userScore >= mapperScore){
@@ -488,6 +487,13 @@ const parseMelody = function (inputMessage, tonalCenter, midiNumberMin, midiNumb
 // DO NOT FILL IN WITH YOUR SETTINGS
 // this will be populated in the MFL patch via the twitchSettings ID key
 const twitchApiOptions = {
+    options: {
+        clientId: "tptsParser",
+        debug: isVerbose
+    },
+    connection: {
+        reconnect: true
+    },
     identity: {
         username: "",
         password: ""
@@ -526,8 +532,8 @@ function onMessageHandler (channel, userstate, msg, self) {
     if (commandName.slice(0, 1) === '!') {
         let errorMessageRegex = /^\/tpts\/twitchBot\/errorMessage/;
 
-        if(verbose) max.post(`Parsing: ${commandName}...`);
-        if(verbose) max.post(`Userstate object: ${JSON.stringify(userstate)}`);
+        if(isVerbose) max.post(`Parsing: ${commandName}...`);
+        if(isVerbose) max.post(`Userstate object: ${JSON.stringify(userstate)}`);
         
         // get the user's access level
         let userAccessLevel = "";
@@ -535,27 +541,22 @@ function onMessageHandler (channel, userstate, msg, self) {
         if(userstate.badges){
             if("broadcaster" in userstate.badges){
                 // user is broadcaster
-                if(verbose) max.post(`${userstate.username} is tpts!`);
-                userAccessLevel = "tpts";
-
-            } else if("admin" in userstate.badges || "global_mod"){
-                // user is admin
-                if(verbose) max.post(`${userstate.username} is an admin!`);
-                userAccessLevel = "admin";
+                if(isVerbose) max.post(`${userstate.username} is bcaster!`);
+                userAccessLevel = "bcaster";
 
             } else if("moderator" in userstate.badges){
                 // user is moderator
-                if(verbose) max.post(`${userstate.username} is a mod!`);
+                if(isVerbose) max.post(`${userstate.username} is a mod!`);
                 userAccessLevel = "mod";
 
             } else if("subscriber" in userstate.badges || "founder" in userstate.badges){
                 // user is sub
-                if(verbose) max.post(`${userstate.username} is a subscriber!`);
+                if(isVerbose) max.post(`${userstate.username} is a subscriber!`);
                 userAccessLevel = "sub";
             }
             
         } else {
-            if(verbose) max.post(`${userstate.username} is a pleeb!`);
+            if(isVerbose) max.post(`${userstate.username} is a pleeb!`);
             userAccessLevel = "public";
         }
 

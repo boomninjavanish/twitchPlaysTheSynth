@@ -70,13 +70,14 @@
 - [bug] range is now 0-100 for paramamapper parameters; resolves #55
 - [enhancement] change some wording and formatting in the settings page in tpts.main 
 
-## v1.1 (2021-3-25)
+## v1.1 (2021-3-30)
 - [feature] paramamapper commands may now be restricted to the following access levels. Users in upper levels may access may access mappers below their level while users in lower levels may only use mappers for their level and below; resolves #59; resolves #7
-    - "tpts": the broadcaster
-    - "admin": administrators or global moderators
+    - "bcaster": the broadcaster
     - "mod": moderators
     - "sub": subscribers
     - "public": everyone else
+- [bug] note plays for proper durations in melody sequencer (note off occurs 10 ms before next note)
 - [bug] melody sequencers now have a limit of how small a note beat duration may be; if beat is less that 0.1 it is set to 0.1; resolves #49
+- [bug] tmi.js now reconnects when the connection times out; solves the problem of script stalling when the connection is lost for a long period of time (node.js: stdout [12:42] error: Ping timeout)
 - [enhancement] updated tmi.js from v1.5.0 to v1.7.3
 - [housekeeping] javascript has been consolidated to a single file; was having trouble with importing a class into the main file
