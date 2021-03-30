@@ -239,7 +239,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 828.0, 34.5, 111.0, 22.0 ],
+					"patching_rect" : [ 1130.0, 195.5, 111.0, 22.0 ],
 					"text" : "r reassignSeqBang"
 				}
 
@@ -262,7 +262,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 828.0, 296.0, 153.0, 22.0 ],
+					"patching_rect" : [ 1130.0, 457.0, 153.0, 22.0 ],
 					"text" : "prepend /tpts/registryReset"
 				}
 
@@ -273,7 +273,7 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 828.0, 340.5, 138.0, 22.0 ],
+					"patching_rect" : [ 1130.0, 501.5, 138.0, 22.0 ],
 					"text" : "udpsend 127.0.0.1 9009"
 				}
 
@@ -284,7 +284,7 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 824.0, 909.0, 138.0, 22.0 ],
+					"patching_rect" : [ 1126.0, 1070.0, 138.0, 22.0 ],
 					"text" : "udpsend 127.0.0.1 9009"
 				}
 
@@ -296,7 +296,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 481.0, 103.0, 165.0, 22.0 ],
+					"patching_rect" : [ 902.0, 451.0, 165.0, 22.0 ],
 					"text" : "route /tpts/sequencerRegistry"
 				}
 
@@ -308,7 +308,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 481.0, 66.0, 97.0, 22.0 ],
+					"patching_rect" : [ 902.0, 414.0, 97.0, 22.0 ],
 					"text" : "udpreceive 8008"
 				}
 
@@ -322,7 +322,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 1036.0, 39.0, 108.0, 39.0 ],
+					"patching_rect" : [ 1338.0, 200.0, 108.0, 39.0 ],
 					"text" : "Unused (for now)"
 				}
 
@@ -482,7 +482,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1063.0, 115.0, 64.0, 22.0 ],
+					"patching_rect" : [ 1365.0, 276.0, 64.0, 22.0 ],
 					"text" : "r userBpm"
 				}
 
@@ -496,7 +496,7 @@
 					"maxclass" : "newobj",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 1063.25, 314.5, 66.0, 22.0 ],
+					"patching_rect" : [ 1365.25, 475.5, 66.0, 22.0 ],
 					"text" : "s newBPM"
 				}
 
@@ -508,7 +508,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 1063.0, 86.5, 264.0, 20.0 ],
+					"patching_rect" : [ 1365.0, 247.5, 264.0, 20.0 ],
 					"text" : "tempo Ops",
 					"textcolor" : [ 1.0, 1.0, 1.0, 1.0 ]
 				}
@@ -525,7 +525,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 1235.0, 198.5, 130.0, 51.0 ],
+					"patching_rect" : [ 1537.0, 359.5, 130.0, 51.0 ],
 					"text" : "change to the new tempo over a number of beats",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -541,7 +541,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1063.25, 213.0, 167.0, 22.0 ],
+					"patching_rect" : [ 1365.25, 374.0, 167.0, 22.0 ],
 					"text" : "dunlap.changeOverBeats 120"
 				}
 
@@ -556,7 +556,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1211.25, 115.0, 39.0, 22.0 ],
+					"patching_rect" : [ 1513.25, 276.0, 39.0, 22.0 ],
 					"text" : "r bpm"
 				}
 
@@ -572,7 +572,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 1151.25, 307.0, 126.0, 37.0 ],
+					"patching_rect" : [ 1453.25, 468.0, 126.0, 37.0 ],
 					"text" : "set the tempo as per the parser",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -692,7 +692,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 137.0, 125.0, 673.0, 415.0 ],
+						"rect" : [ 0.0, 26.0, 1875.0, 1281.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 1,
 						"default_fontsize" : 12.0,
@@ -1632,7 +1632,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 505.5, 215.0, 163.0, 64.0 ],
+					"patching_rect" : [ 727.5, 480.5, 163.0, 64.0 ],
 					"text" : "**todo** will add routing for other types of sequencers; for example a drum machine"
 				}
 
@@ -1643,7 +1643,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 666.5, 58.0, 264.0, 20.0 ],
+					"patching_rect" : [ 968.5, 219.0, 264.0, 20.0 ],
 					"text" : "sequencer registry",
 					"textcolor" : [ 1.0, 1.0, 1.0, 1.0 ]
 				}
@@ -1658,7 +1658,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 663.0, 86.5, 163.0, 78.0 ],
+					"patching_rect" : [ 965.0, 247.5, 163.0, 78.0 ],
 					"text" : "clear the counter and list of sequencers then send the signal to all sequencers to recreate the list"
 				}
 
@@ -1670,7 +1670,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 680.0, 660.0, 29.5, 22.0 ],
+					"patching_rect" : [ 982.0, 821.0, 29.5, 22.0 ],
 					"text" : "t l l"
 				}
 
@@ -1698,7 +1698,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 2,
 					"outlettype" : [ "bang", "bang" ],
-					"patching_rect" : [ 828.0, 150.0, 177.0, 22.0 ],
+					"patching_rect" : [ 1130.0, 311.0, 177.0, 22.0 ],
 					"text" : "t b b"
 				}
 
@@ -1711,7 +1711,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 863.0, 764.5, 174.0, 51.0 ],
+					"patching_rect" : [ 1165.0, 925.5, 174.0, 51.0 ],
 					"text" : "make track name first in list so that only the device on that track listens"
 				}
 
@@ -1724,7 +1724,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 1028.0, 844.0, 109.0, 51.0 ],
+					"patching_rect" : [ 1330.0, 1005.0, 109.0, 51.0 ],
 					"text" : "respond to devices with index number"
 				}
 
@@ -1736,7 +1736,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 824.0, 776.5, 37.0, 22.0 ],
+					"patching_rect" : [ 1126.0, 937.5, 37.0, 22.0 ],
 					"text" : "zl.rev"
 				}
 
@@ -1748,7 +1748,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 824.0, 858.5, 193.0, 22.0 ],
+					"patching_rect" : [ 1126.0, 1019.5, 193.0, 22.0 ],
 					"text" : "prepend /tpts/registryIndexNumber"
 				}
 
@@ -1778,7 +1778,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 1011.0, 296.0, 29.5, 22.0 ],
+					"patching_rect" : [ 1313.0, 457.0, 29.5, 22.0 ],
 					"text" : "0"
 				}
 
@@ -1790,7 +1790,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 711.0, 736.0, 35.0, 22.0 ],
+					"patching_rect" : [ 1013.0, 897.0, 35.0, 22.0 ],
 					"text" : "clear"
 				}
 
@@ -1802,7 +1802,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 680.0, 236.0, 159.0, 22.0 ],
+					"patching_rect" : [ 902.0, 501.5, 159.0, 22.0 ],
 					"text" : "route tpts.melodySequencer"
 				}
 
@@ -1823,7 +1823,7 @@
 				"box" : 				{
 					"bgcolor" : [ 0.0, 0.0, 0.0, 1.0 ],
 					"bordercolor" : [ 0.98, 0.0, 0.0, 1.0 ],
-					"cols" : 1,
+					"cols" : 2,
 					"fgcolor" : [ 0.890196078431372, 0.0, 0.0, 0.6 ],
 					"fontface" : 0,
 					"fontname" : "Ableton Sans Medium",
@@ -1859,7 +1859,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"parameter_enable" : 1,
-					"patching_rect" : [ 828.0, 105.0, 61.0, 18.0 ],
+					"patching_rect" : [ 1130.0, 266.0, 61.0, 18.0 ],
 					"presentation" : 1,
 					"presentation_rect" : [ 25.25, 367.5, 61.0, 18.0 ],
 					"saved_attribute_attributes" : 					{
@@ -1886,7 +1886,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 788.0, 478.0, 106.0, 37.0 ],
+					"patching_rect" : [ 1090.0, 639.0, 106.0, 37.0 ],
 					"text" : "make registry index number"
 				}
 
@@ -1898,7 +1898,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "bang" ],
-					"patching_rect" : [ 680.0, 434.0, 29.5, 22.0 ],
+					"patching_rect" : [ 982.0, 595.0, 29.5, 22.0 ],
 					"text" : "t l b"
 				}
 
@@ -1910,7 +1910,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "int" ],
-					"patching_rect" : [ 722.0, 524.5, 29.5, 22.0 ],
+					"patching_rect" : [ 1024.0, 685.5, 29.5, 22.0 ],
 					"text" : "+ 1"
 				}
 
@@ -1922,7 +1922,7 @@
 					"numinlets" : 5,
 					"numoutlets" : 4,
 					"outlettype" : [ "int", "", "", "int" ],
-					"patching_rect" : [ 722.0, 484.5, 61.0, 22.0 ],
+					"patching_rect" : [ 1024.0, 645.5, 61.0, 22.0 ],
 					"text" : "counter"
 				}
 
@@ -1934,7 +1934,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 722.0, 567.0, 41.0, 22.0 ],
+					"patching_rect" : [ 1024.0, 728.0, 41.0, 22.0 ],
 					"text" : "set $1"
 				}
 
@@ -1946,7 +1946,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 680.0, 621.5, 62.0, 22.0 ],
+					"patching_rect" : [ 982.0, 782.5, 62.0, 22.0 ],
 					"text" : "prepend x"
 				}
 
@@ -1958,7 +1958,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 4,
 					"outlettype" : [ "", "", "", "" ],
-					"patching_rect" : [ 680.0, 776.5, 133.0, 22.0 ],
+					"patching_rect" : [ 982.0, 937.5, 133.0, 22.0 ],
 					"saved_object_attributes" : 					{
 						"embed" : 0,
 						"precision" : 6
@@ -3449,7 +3449,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-65", 0 ],
-					"midpoints" : [ 700.0, 701.0, 833.5, 701.0 ],
+					"midpoints" : [ 1002.0, 862.0, 1135.5, 862.0 ],
 					"source" : [ "obj-25", 1 ]
 				}
 
@@ -3604,7 +3604,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-1", 0 ],
-					"midpoints" : [ 720.5, 765.0, 689.5, 765.0 ],
+					"midpoints" : [ 1022.5, 926.0, 991.5, 926.0 ],
 					"source" : [ "obj-55", 0 ]
 				}
 
@@ -3619,7 +3619,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-80", 2 ],
-					"midpoints" : [ 1020.5, 446.0, 752.5, 446.0 ],
+					"midpoints" : [ 1322.5, 607.0, 1054.5, 607.0 ],
 					"source" : [ "obj-58", 0 ]
 				}
 
@@ -3634,7 +3634,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-55", 0 ],
-					"midpoints" : [ 995.5, 286.0, 1052.0, 286.0, 1052.0, 715.0, 720.5, 715.0 ],
+					"midpoints" : [ 1297.5, 447.0, 1354.0, 447.0, 1354.0, 876.0, 1022.5, 876.0 ],
 					"order" : 1,
 					"source" : [ "obj-6", 1 ]
 				}
@@ -3643,7 +3643,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-58", 0 ],
-					"midpoints" : [ 995.5, 286.0, 1020.5, 286.0 ],
+					"midpoints" : [ 1297.5, 447.0, 1322.5, 447.0 ],
 					"order" : 0,
 					"source" : [ "obj-6", 1 ]
 				}
