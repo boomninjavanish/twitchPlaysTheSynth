@@ -16,6 +16,9 @@ let isVerbose = true;
 // https://docs.cycling74.com/nodeformax/api/module-max-api.html
 const max = require('max-api');
 
+// https://github.com/rotemdan/lzutf8.js
+const compressor = require('lzutf8');
+
 // tell us the node version
 max.post(`Node version: ${process.version}`);
 
@@ -94,8 +97,8 @@ const parse = function (
 ) {
     // find which message is being parsed
     let outputMessage = []; // the Max formatted output
-    let typeRegex = /^![A-Za-z0-9-]+/; // the inputKey with exclamation point (include all letters, numbers, and hyphens)
-    let melodyRegex = /^!m\b|^!m\d+\b/;
+    let typeRegex = /^![A-Za-z0-9-]+|!%/; // the inputKey with exclamation point (include all letters, numbers, and hyphens)
+    let melodyRegex = /^!m\b|^!m\d+\b|^!%/;
     let matches = inputMessage.match(typeRegex); // get the inputKey from the message
     let noAhhh = ""; // input key with out the AHHHH!!! (exclamation point)
 
@@ -103,12 +106,25 @@ const parse = function (
     if(matches){ 
         noAhhh = matches[0].slice(1); // strip the exclamation point from the key for paramamapper messages
         let mapperIndex = mappers.findIndex(object => object.name === noAhhh); // get the index value of mapper name
+        let melodyIndicator = matches[0].match(melodyRegex);
+
+        max.post(`Noahhh: ${noAhhh}`);
 
         // parse melody if '!m'; everything else is considered to be paramamapper or error
-        if(matches[0].match(melodyRegex))
+        if(melodyIndicator){
+            // non compressed melody
+            if(noAhhh === "%"){
+                let theCompressedMelody = inputMessage.slice(2);
+                
+                // decompress melody before parsing
+                let theExpandedMelody = compressor.decompress(theCompressedMelody, {inputEncoding: "StorageBinaryString"});
+                inputMessage = `!m${theExpandedMelody}`;
+                if(isVerbose) max.post(`Decompressed melody: ${inputMessage}`);
+            } 
+            // parse melody
             outputMessage = parseMelody(inputMessage, tonalCenter, midiNumberMin, midiNumberMax, midiNumberTrimType);
-
-        else if(mapperIndex > -1){ // <---------////////////
+        
+        } else if(mapperIndex > -1){ // if not a melody, then it must be a paramamapper    
             // restrict command parsing to different tiers based on mapper[x].access value
             // assign a user and the mapper a level score 
             let levels = [
@@ -478,6 +494,8 @@ const parseMelody = function (inputMessage, tonalCenter, midiNumberMin, midiNumb
     // return all of the messages in an array
     return outputMessage;
 }
+
+
 
 /*
    /////////// global vars /////////// 

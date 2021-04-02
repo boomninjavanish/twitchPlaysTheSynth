@@ -81,3 +81,7 @@
 - [bug] tmi.js now reconnects when the connection times out; solves the problem of script stalling when the connection is lost for a long period of time (node.js: stdout [12:42] error: Ping timeout)
 - [enhancement] updated tmi.js from v1.5.0 to v1.7.3
 - [housekeeping] javascript has been consolidated to a single file; was having trouble with importing a class into the main file
+
+## v1.2 (2021-4-x)
+- [feature] user can now submit melodies compressed using LZ-UTF8 encoded as a "StorageBinaryString". (see: https://github.com/rotemdan/lzutf8.js)
+-
