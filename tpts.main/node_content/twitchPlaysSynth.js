@@ -30,26 +30,86 @@ const tmi = require('tmi.js');
    /////////// classes /////////// 
 */
 
+// Named values are mapper parameters value numbers that correspond to a named string
+class NamedValue {
+    constructor(name = "", value = 0){
+        this.name = name;
+        this.value = value;
+    }
+}
+
+// A Mapper is a paramamapper mapper that maps parameters
+//  name: the mapper's name
+//  access: which level of user may adjust this mapper's value
+//  values: an array of named values (see class above)
+class Mapper {
+    constructor(name = "", access = "public", values = []){
+            this.name = name;
+            this.access = access;
+            this.values = values;
+        }
+}
+
 // Class that makes an array of paramamapper mappers.
-class Mapper extends Array {
+class Mappers extends Array {
     // Constructor:
     constructor(...items) {
         super(...items);    
     }
 
+    // Fields
+    valueRange = {
+        min: 0,
+        max: 100
+    }
+
     // Methods:
-    // add a new mapper to the array
-    // maxData is a max list with: <name> <access>
+    // add a new mapper object to the array
+    // maxData is a max list with: <name> <access> <optional:valueNames>
+    // the value names are a comma separated list with no spaces
     add(maxData){
+        const mapper = new Mapper(); // mapper object to push into array
+        let csValues; // the comma-separated list of named values
+
         // retrieve the data
         let dataArr = maxData.split(" ");
 
-        if(!this.find(object => object.name === dataArr[0])){
-            // make public if access not defined
-            if(!dataArr[1]){ dataArr[1] = "public"; }
-        
-            // add to this array
-            this.push({ name: dataArr[0], access: dataArr[1] });
+        if(dataArr[0]){
+            mapper.name = dataArr[0];
+            if(dataArr[1]) mapper.access = dataArr[1];
+
+            // if no named values, then no need to parse them
+            if(dataArr[2])
+                csValues = dataArr[2];
+            else 
+                csValues = false;
+            
+            // if the mapper doesn't exist, push it to the mappers array
+            if(!this.find(object => object.name === mapper.name)){
+               // split out the value names into an array
+                if(csValues){
+                    let namedValArr = csValues.split(",");
+                    if(namedValArr){
+                        let total = parseInt(namedValArr.length);
+                        
+                        // create a NamedValue object for each name and set its value
+                        for(let index in namedValArr){
+                            // calculate the middle of each value range
+                            let mid = (parseFloat(index) + 1 / total);
+                            mid += (parseFloat(index) + 2 / total);
+                            mid /= 2;
+
+                            // scale to the actual value 
+                            let value = (this.valueRange.max * mid) / total;
+                            value = Math.round(value);
+                            
+                            mapper.values[index] = new NamedValue(namedValArr[index], value); 
+                        }
+                    }
+                } 
+                // add to this array
+                this.push(mapper);
+            }
         }
     }
 
@@ -77,7 +137,7 @@ class Mapper extends Array {
             if(!dataArr[1]){ dataArr[1] = "public"; }
 
             // change access level
-            this[indexToChange] = { name: dataArr[0], access: dataArr[1] };
+            this[indexToChange].access = dataArr[1];
         }
     }
 }
@@ -495,8 +555,6 @@ const parseMelody = function (inputMessage, tonalCenter, midiNumberMin, midiNumb
     return outputMessage;
 }
 
-
-
 /*
    /////////// global vars /////////// 
 */
@@ -520,8 +578,8 @@ const twitchApiOptions = {
 };
 
 // for making mappers in paramamapper
-// each mapper name in the array has the following elements: name & access
-const mappers = new Mapper();
+// each mapper name in the array has the following elements: name, access, and values
+const mappers = new Mappers();
 
 // for keeping within midi pitch number range
 let midiNumberMin = 20;

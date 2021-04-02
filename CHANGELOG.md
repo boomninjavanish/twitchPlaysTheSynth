@@ -84,4 +84,5 @@
 
 ## v1.2 (2021-4-x)
 - [feature] user can now submit melodies compressed using LZ-UTF8 encoded as a "StorageBinaryString". (see: https://github.com/rotemdan/lzutf8.js)
--
+- [feature] named parameters
+- 
