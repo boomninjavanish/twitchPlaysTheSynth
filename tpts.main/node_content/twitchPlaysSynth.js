@@ -629,9 +629,14 @@ function onMessageHandler (channel, userstate, msg, self) {
                 // user is sub
                 if(isVerbose) max.post(`${userstate.username} is a subscriber!`);
                 userAccessLevel = "sub";
+            } else {
+                // user has badges, but none meet the requirements
+                if(isVerbose) max.post(`${userstate.username} is a pleeb!`);
+                userAccessLevel = "public";
             }
             
         } else {
+            // user has no badges at all
             if(isVerbose) max.post(`${userstate.username} is a pleeb!`);
             userAccessLevel = "public";
         }
