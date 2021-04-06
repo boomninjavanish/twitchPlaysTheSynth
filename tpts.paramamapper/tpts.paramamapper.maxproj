@@ -2,7 +2,7 @@
 	"name" : "tpts.paramamapper",
 	"version" : 1,
 	"creationdate" : 3697233263,
-	"modificationdate" : 3698058206,
+	"modificationdate" : 3700508823,
 	"viewrect" : [ 63.0, 699.0, 300.0, 500.0 ],
 	"autoorganize" : 1,
 	"hideprojectwindow" : 0,
@@ -21,17 +21,22 @@
 				"local" : 1
 			}
 ,
+			"tpts.bpatcher.pmappers.maxpat" : 			{
+				"kind" : "patcher",
+				"local" : 1
+			}
+,
 			"M4L.MapButtonMultiSingle.maxpat" : 			{
 				"kind" : "patcher",
 				"local" : 1
 			}
 ,
-			"tpts.changeParamOverBeats.maxpat" : 			{
+			"tpts.pmapper.checkForMelodyCommand.maxpat" : 			{
 				"kind" : "patcher",
 				"local" : 1
 			}
 ,
-			"tpts.pmapper.checkForMelodyCommand.maxpat" : 			{
+			"tpts.changeParamOverBeats.maxpat" : 			{
 				"kind" : "patcher",
 				"local" : 1
 			}
@@ -50,7 +55,7 @@
 ,
 	"searchpath" : 	{
 		"0" : 		{
-			"bootpath" : "~/Documents/GitHub/randomMaxAbstractions",
+			"bootpath" : "~/OneDrive - Dunlap Media/GitHub/randomMaxAbstractions",
 			"projectrelativepath" : "../../randomMaxAbstractions",
 			"label" : "",
 			"recursive" : 1,

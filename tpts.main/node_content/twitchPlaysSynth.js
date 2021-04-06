@@ -43,11 +43,132 @@ class NamedValue {
 //  access: which level of user may adjust this mapper's value
 //  values: an array of named values (see class above)
 class Mapper {
-    constructor(name = "", access = "public", values = []){
-            this.name = name;
-            this.access = access;
-            this.values = values;
+    constructor(name = "", access = "public"){
+            this.name = name; // the name of the mapper
+            this.access = access; // the access level of the mapper
+            this.values = []; 
+    }
+
+    // Fields:
+    // the value range for this mapper
+    valueRange = {
+        min: 0,
+        max: 100
+    }
+    
+    // Setters:
+    // set the named value names to the this.value array
+    // input: csValueNames: a comma separated string of value names
+    set valueNames(csValueNames){
+        if(csValueNames){
+            let nameArr = csValueNames.split(",");
+            let startedEmpty = this.values.length === 0;
+            let unequalLength = !(this.values.length === nameArr.length);
+
+            // reset the values array if the new one is different size
+            if(unequalLength) this.values = [];
+
+            for(let i in nameArr){            
+                // if there is a named value there, set the parsed names to the name field
+                if(this.values[i] instanceof NamedValue)
+                    this.values[i].name = nameArr[i];
+
+                // otherwise, make a new named value, set the name to the name
+                else
+                    this.values[i] = new NamedValue(nameArr[i]);            
+            }
+
+            if(startedEmpty || unequalLength) this.genValueValues();
         }
+    }
+
+    // set the named value values to the this.value array
+    // input: csValueValues: a comma separated string of value name values
+    set valueValues(csValueValues){
+        // if no values are given, automaticaly generate them
+        if(!csValueValues) this.genValueValues();
+
+        // otherwise, split out and assign the values
+        else {
+            let numArr = csValueValues.split(",");
+                      
+            for(let i in numArr){
+                // if there is a named value there, set the number to the value
+                if(this.values[i] instanceof NamedValue) {
+                    let valueValue = parseFloat(numArr[i]);
+                    // if value is NaN, leave the generated value in place 
+                    if(!isNaN(valueValue))
+                        this.values[i].value = valueValue;
+                }
+                // otherwise, make a new named value and set the number to value
+                else
+                    this.values[i] = new NamedValue("", parseFloat(numArr[i]));                
+            }
+        }
+    }
+
+    // Getters:
+    get valueNames(){
+        let valueNames = [];
+
+        // if no value names present, return empty
+        // otherwise, give an array of named value names
+        if(!(this.values.length === 0)){
+            for(let index in this.values){
+                valueNames.push(this.values[index].name);
+            }
+        }
+        return valueNames;
+    }
+
+    get valueValues(){
+        let valueNames = [];
+
+        // if no value names present, return empty
+        // otherwise, give an array of named value values
+        if(!(this.values.length === 0)){
+            for(let index in this.values){
+                valueNames.push(this.values[index].value);
+            }
+        }
+        return valueNames;
+    }
+
+    // Methods:
+    // generates the named value names automatically if there
+    //  named value names in this.values
+    genValueValues(){
+        let numNamedValues = this.values.length;
+        
+        // exit silently if the array of values are empty
+        if(numNamedValues === 0) return;
+        
+        for(let index in this.values){
+            // calculate the middle of each value range
+            let mid = (parseFloat(index) + 1 / numNamedValues);
+            mid += (parseFloat(index) + 2 / numNamedValues);
+            mid /= 2;
+
+            // scale to the actual value 
+            let value = (this.valueRange.max * mid) / numNamedValues;
+            value = Math.round(value);
+
+            // set the value for the named value
+            this.values[index].value = value;
+        }
+        
+        // output to paramamapper values text box
+        // parse into csv
+        let csvValueValues = "";
+        for(let index in this.values){
+            if(index === 0)
+                csvValueValues = `${this.values[index].value}`;
+            else 
+                csvValueValues += `,${this.values[index].value}`;
+        }
+        max.outlet(`/tpts/paramamapper ${this.name} valueValues ${csvValueValues}`);
+    }
+    
 }
 
 // Class that makes an array of paramamapper mappers.
@@ -57,56 +178,49 @@ class Mappers extends Array {
         super(...items);    
     }
 
-    // Fields
-    valueRange = {
-        min: 0,
-        max: 100
+    // Methods:
+    // find and return a mapper object within this array
+    findMapper(mapperName){
+        return this.find(object => object.name === mapperName);
     }
 
-    // Methods:
-    // add a new mapper object to the array
-    // maxData is a max list with: <name> <access> <optional:valueNames>
-    // the value names are a comma separated list with no spaces
-    add(maxData){
-        const mapper = new Mapper(); // mapper object to push into array
-        let csValues; // the comma-separated list of named values
+    // find and return a mapper index within this array
+    findMapperIndex(mapperName){
+        return this.findIndex(object => object.name === mapperName);
+    }
 
+    // parses string received from max that contains a mapper name
+    //  followed by a space, followed by a comma sepaated list of values
+    //  returns an object that contains this array's index, the comma-
+    //  separated values, and whether the mapper was found in this array
+    parseMaxCvData(maxData){
+        if(maxData){
+            // parse incoming data into elements
+            let dataArr = maxData.split(" ");
+
+            // find the element in the array
+            let indexToChange = this.findMapperIndex(dataArr[0]);
+            let csValues = dataArr[1];
+
+            if(indexToChange > -1 || csValues)
+                return { found: true, index: indexToChange, csValues: csValues };            
+        }
+        return { found: false, index: null, csValues: null };
+    }
+
+    // add a new mapper object to the array
+    // maxData is a max list with: <name> <access>
+    addMapper(maxData){
         // retrieve the data
         let dataArr = maxData.split(" ");
 
         if(dataArr[0]){
+            const mapper = new Mapper(); // mapper object to push into array
             mapper.name = dataArr[0];
             if(dataArr[1]) mapper.access = dataArr[1];
-
-            // if no named values, then no need to parse them
-            if(dataArr[2])
-                csValues = dataArr[2];
-            else 
-                csValues = false;
             
             // if the mapper doesn't exist, push it to the mappers array
-            if(!this.find(object => object.name === mapper.name)){
-               // split out the value names into an array
-                if(csValues){
-                    let namedValArr = csValues.split(",");
-                    if(namedValArr){
-                        let total = parseInt(namedValArr.length);
-                        
-                        // create a NamedValue object for each name and set its value
-                        for(let index in namedValArr){
-                            // calculate the middle of each value range
-                            let mid = (parseFloat(index) + 1 / total);
-                            mid += (parseFloat(index) + 2 / total);
-                            mid /= 2;
-
-                            // scale to the actual value 
-                            let value = (this.valueRange.max * mid) / total;
-                            value = Math.round(value);
-                            
-                            mapper.values[index] = new NamedValue(namedValArr[index], value); 
-                        }
-                    }
-                } 
+            if(!this.findMapper(mapper.name)){
                 // add to this array
                 this.push(mapper);
             }
@@ -114,9 +228,9 @@ class Mappers extends Array {
     }
 
     // delete a mapper from the array by mapper name
-    delete(name){
+    deleteMapper(name){
         // find it
-        let indexToDelete = this.findIndex(object => object.name === name);
+        let indexToDelete = this.findMapperIndex(name);
 
         // if found, delete
         if(indexToDelete > -1)
@@ -125,12 +239,12 @@ class Mappers extends Array {
 
     // change the access level of a mapper
     // maxData is a max list with: <name> <accessLevel>
-    changeAccess(maxData){
+    changeMapperAccess(maxData){
         // parse incoming data into elements
         let dataArr = maxData.split(" ");
 
         // find the element in the array
-        let indexToChange = this.findIndex(object => object.name === dataArr[0]);
+        let indexToChange = this.findMapperIndex(dataArr[0]);
 
         if(indexToChange > -1){
             // make public if access not defined
@@ -139,6 +253,25 @@ class Mappers extends Array {
             // change access level
             this[indexToChange].access = dataArr[1];
         }
+    }
+
+    // add named value names to a mapper
+    // input: a string that contains the mapper name followed by a space followed by 
+    //  a comma separated list of named value names: "<mapperName> <csNames>"
+    addMapperValueNames(maxData){
+        max.post(`maxData: ${maxData}`);
+        let parsedData = this.parseMaxCvData(maxData);
+
+        if(parsedData.found) this[parsedData.index].valueNames = parsedData.csValues;   
+    }
+
+    // add named value values to a mapper
+    // input: a string that contains the mapper name followed by a space followed by 
+    //  a comma separated list of named value values: "<mapperName> <csValues>"
+    addMapperValueValues(maxData){
+        let parsedData = this.parseMaxCvData(maxData);
+        
+        if(parsedData.found) this[parsedData.index].valueValues = parsedData.csValues;
     }
 }
 
@@ -789,16 +922,32 @@ max.addHandler("input", (inputMessage) => {
 });
 
 // register new mapper names
+// data = <mapper> <access>
 max.addHandler("mapperName", (data) => {
-    mappers.add(data);
+    mappers.addMapper(data);
 });
 
 // delete mapper names
+// mapperName = name of mapper to delete
 max.addHandler("deleteMapperName", (mapperName) => {
-   mappers.delete(mapperName);
+   mappers.deleteMapper(mapperName);
 });
 
 // changes the access level of a mapper name
+// data = <mapper> <access>
 max.addHandler("changeMapperAccess", (data) => {
-    mappers.changeAccess(data);
+    mappers.changeMapperAccess(data);
 });
+
+// add mapper value names to a mapper
+// data = <mapperName> <name,name,name...>
+max.addHandler("addMapperValueNames", (data) => {
+    mappers.addMapperValueNames(data);
+});
+
+// add mapper value values to a mapper
+// data = <mapperName> <value,value,value...>
+max.addHandler("addMapperValueValues", (data) => {
+    mappers.addMapperValueValues(data);
+});
+
