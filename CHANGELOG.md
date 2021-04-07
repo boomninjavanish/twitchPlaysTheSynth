@@ -82,7 +82,18 @@
 - [enhancement] updated tmi.js from v1.5.0 to v1.7.3
 - [housekeeping] javascript has been consolidated to a single file; was having trouble with importing a class into the main file
 
-## v1.2 (2021-4-x)
-- [feature] user can now submit melodies compressed using LZ-UTF8 encoded as a "StorageBinaryString". (see: https://github.com/rotemdan/lzutf8.js)
-- [feature] named parameters
+## v1.2 (2021-4-7)
+- [feature] user can now submit melodies compressed using LZ-UTF8 encoded as a "StorageBinaryString". (see: https://github.com/rotemdan/lzutf8.js):
+    - all the characters to the right of "!m" should be compressed using the above encoding algorithm
+    - before submitting, all compressed characters should be preceded by the identifier (sans quotes): "!%"
+    - also, the total sum of the characters being submitted must be less than or equal to ( <= ) 500 as this is the Twitch chat character limit
+- [feature]* mappers may now have named values assigned to them:
+    - syntax: each entry of names or values must be separated by periods ('.'); no spaces are allowed; examples:
+        - names: a.b.c.d 
+        - values: 1.2.3.4
+    - when the names are entered, values are generated automatically; after which new values may be substituted with a number of values equal to the number of names entered; see the syntax above for example
+    - resolves #57; resolves #60
 - [bug] users that had badges but were not subscribers, mods, or the broadcaster would be denied public access to mappers; resolves #68
+
+
+*[bug/knownissue] the top value names fields in the GUI does not send information to the main app; this will be fixed in v1.2.1

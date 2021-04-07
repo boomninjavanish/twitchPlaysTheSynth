@@ -41,7 +41,7 @@
 		"boxes" : [ 			{
 				"box" : 				{
 					"bgmode" : 0,
-					"border" : 1,
+					"border" : 0,
 					"clickthrough" : 0,
 					"enablehscroll" : 0,
 					"enablevscroll" : 0,
@@ -55,7 +55,7 @@
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 33.0, 392.0, 446.0, 134.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 14.749999165534973, 59.125000178813934, 437.0, 132.0 ],
+					"presentation_rect" : [ 9.749999165534973, 30.125000178813934, 437.0, 132.0 ],
 					"viewvisibility" : 1
 				}
 
@@ -76,7 +76,7 @@
 					"parameter_enable" : 1,
 					"patching_rect" : [ 602.0, 322.5, 141.0, 22.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 7.749999165534973, 32.0, 118.0, 18.125000178813934 ],
+					"presentation_rect" : [ 2.749999165534973, 3.0, 118.0, 18.125000178813934 ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_enum" : [ "parameters", "values" ],
@@ -338,7 +338,7 @@
 					"parameter_enable" : 1,
 					"patching_rect" : [ 33.0, 322.5, 44.0, 15.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 413.749999165534973, 15.0, 44.0, 15.0 ],
+					"presentation_rect" : [ 408.749999165534973, 3.0, 44.0, 15.0 ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_enum" : [ "val1", "val2" ],
@@ -381,39 +381,6 @@
 			}
 , 			{
 				"box" : 				{
-					"fontface" : 2,
-					"fontname" : "Helvetica Bold",
-					"fontsize" : 10.0,
-					"id" : "obj-39",
-					"maxclass" : "comment",
-					"numinlets" : 1,
-					"numoutlets" : 0,
-					"patching_rect" : [ 58.0, 8.0, 137.0, 16.0 ],
-					"presentation" : 1,
-					"presentation_rect" : [ 78.749999165534973, 9.5, 136.0, 16.0 ],
-					"text" : "Parameter Mapper",
-					"textcolor" : [ 1.0, 1.0, 1.0, 1.0 ]
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"fontname" : "Helvetica Bold",
-					"fontsize" : 20.0,
-					"id" : "obj-32",
-					"maxclass" : "comment",
-					"numinlets" : 1,
-					"numoutlets" : 0,
-					"patching_rect" : [ 0.0, 3.0, 56.0, 26.0 ],
-					"presentation" : 1,
-					"presentation_rect" : [ 6.749999165534973, 4.0, 70.0, 26.0 ],
-					"text" : "!tpts",
-					"textcolor" : [ 1.0, 1.0, 1.0, 1.0 ]
-				}
-
-			}
-, 			{
-				"box" : 				{
 					"angle" : 270.0,
 					"bgcolor" : [ 0.157, 0.157, 0.157, 1.0 ],
 					"border" : 1,
@@ -425,7 +392,7 @@
 					"numoutlets" : 0,
 					"patching_rect" : [ 0.0, 31.0, 33.0, 28.0 ],
 					"presentation" : 1,
-					"presentation_rect" : [ 8.749999165534973, 48.0, 449.0, 147.125000178813934 ],
+					"presentation_rect" : [ 3.749999165534973, 19.0, 449.0, 147.125000178813934 ],
 					"proportion" : 0.5,
 					"rounded" : 0
 				}
@@ -559,6 +526,8 @@
 			"obj-66::obj-1::obj-28" : [ "Bypass 1[8]", "Bypass 1", 0 ],
 			"obj-66::obj-1::obj-44" : [ "live.numbox[8]", "Map", 0 ],
 			"obj-66::obj-1::obj-69" : [ "live.toggle[8]", "live.toggle", 0 ],
+			"obj-66::obj-1::obj-96" : [ "textedit[1]", "textedit", 0 ],
+			"obj-66::obj-1::obj-97" : [ "textedit[2]", "textedit", 0 ],
 			"obj-66::obj-2::obj-1" : [ "textedit[8]", "textedit", 0 ],
 			"obj-66::obj-2::obj-26" : [ "Curve1[8]", "Map", 0 ],
 			"obj-66::obj-2::obj-27::obj-15" : [ "Unmap[12]", "unmap", 0 ],
@@ -568,6 +537,8 @@
 			"obj-66::obj-2::obj-28" : [ "Bypass 1[9]", "Bypass 1", 0 ],
 			"obj-66::obj-2::obj-44" : [ "live.numbox[9]", "Map", 0 ],
 			"obj-66::obj-2::obj-69" : [ "live.toggle[9]", "live.toggle", 0 ],
+			"obj-66::obj-2::obj-96" : [ "textedit[4]", "textedit", 0 ],
+			"obj-66::obj-2::obj-97" : [ "textedit[3]", "textedit", 0 ],
 			"obj-66::obj-3::obj-1" : [ "textedit[9]", "textedit", 0 ],
 			"obj-66::obj-3::obj-26" : [ "Curve1[9]", "Map", 0 ],
 			"obj-66::obj-3::obj-27::obj-15" : [ "Unmap[13]", "unmap", 0 ],
@@ -577,7 +548,9 @@
 			"obj-66::obj-3::obj-28" : [ "Bypass 1[10]", "Bypass 1", 0 ],
 			"obj-66::obj-3::obj-44" : [ "live.numbox[10]", "Map", 0 ],
 			"obj-66::obj-3::obj-69" : [ "live.toggle[10]", "live.toggle", 0 ],
-			"obj-66::obj-4::obj-1" : [ "textedit[10]", "textedit", 0 ],
+			"obj-66::obj-3::obj-96" : [ "textedit[11]", "textedit", 0 ],
+			"obj-66::obj-3::obj-97" : [ "textedit[10]", "textedit", 0 ],
+			"obj-66::obj-4::obj-1" : [ "textedit[12]", "textedit", 0 ],
 			"obj-66::obj-4::obj-26" : [ "Curve1[10]", "Map", 0 ],
 			"obj-66::obj-4::obj-27::obj-15" : [ "Unmap[14]", "unmap", 0 ],
 			"obj-66::obj-4::obj-27::obj-19" : [ "Map[14]", "Map", 0 ],
@@ -586,7 +559,9 @@
 			"obj-66::obj-4::obj-28" : [ "Bypass 1[11]", "Bypass 1", 0 ],
 			"obj-66::obj-4::obj-44" : [ "live.numbox[11]", "Map", 0 ],
 			"obj-66::obj-4::obj-69" : [ "live.toggle[11]", "live.toggle", 0 ],
-			"obj-66::obj-6::obj-1" : [ "textedit[13]", "textedit", 0 ],
+			"obj-66::obj-4::obj-96" : [ "textedit[13]", "textedit", 0 ],
+			"obj-66::obj-4::obj-97" : [ "textedit[14]", "textedit", 0 ],
+			"obj-66::obj-6::obj-1" : [ "textedit[22]", "textedit", 0 ],
 			"obj-66::obj-6::obj-26" : [ "Curve1[13]", "Map", 0 ],
 			"obj-66::obj-6::obj-27::obj-15" : [ "Unmap[17]", "unmap", 0 ],
 			"obj-66::obj-6::obj-27::obj-19" : [ "Map[17]", "Map", 0 ],
@@ -595,7 +570,9 @@
 			"obj-66::obj-6::obj-28" : [ "Bypass 1[14]", "Bypass 1", 0 ],
 			"obj-66::obj-6::obj-44" : [ "live.numbox[14]", "Map", 0 ],
 			"obj-66::obj-6::obj-69" : [ "live.toggle[14]", "live.toggle", 0 ],
-			"obj-66::obj-7::obj-1" : [ "textedit[12]", "textedit", 0 ],
+			"obj-66::obj-6::obj-96" : [ "textedit[23]", "textedit", 0 ],
+			"obj-66::obj-6::obj-97" : [ "textedit[21]", "textedit", 0 ],
+			"obj-66::obj-7::obj-1" : [ "textedit[19]", "textedit", 0 ],
 			"obj-66::obj-7::obj-26" : [ "Curve1[12]", "Map", 0 ],
 			"obj-66::obj-7::obj-27::obj-15" : [ "Unmap[16]", "unmap", 0 ],
 			"obj-66::obj-7::obj-27::obj-19" : [ "Map[16]", "Map", 0 ],
@@ -604,7 +581,9 @@
 			"obj-66::obj-7::obj-28" : [ "Bypass 1[13]", "Bypass 1", 0 ],
 			"obj-66::obj-7::obj-44" : [ "live.numbox[13]", "Map", 0 ],
 			"obj-66::obj-7::obj-69" : [ "live.toggle[13]", "live.toggle", 0 ],
-			"obj-66::obj-8::obj-1" : [ "textedit[11]", "textedit", 0 ],
+			"obj-66::obj-7::obj-96" : [ "textedit[18]", "textedit", 0 ],
+			"obj-66::obj-7::obj-97" : [ "textedit[20]", "textedit", 0 ],
+			"obj-66::obj-8::obj-1" : [ "textedit[16]", "textedit", 0 ],
 			"obj-66::obj-8::obj-26" : [ "Curve1[11]", "Map", 0 ],
 			"obj-66::obj-8::obj-27::obj-15" : [ "Unmap[15]", "unmap", 0 ],
 			"obj-66::obj-8::obj-27::obj-19" : [ "Map[15]", "Map", 0 ],
@@ -613,6 +592,8 @@
 			"obj-66::obj-8::obj-28" : [ "Bypass 1[12]", "Bypass 1", 0 ],
 			"obj-66::obj-8::obj-44" : [ "live.numbox[12]", "Map", 0 ],
 			"obj-66::obj-8::obj-69" : [ "live.toggle[12]", "live.toggle", 0 ],
+			"obj-66::obj-8::obj-96" : [ "textedit[17]", "textedit", 0 ],
+			"obj-66::obj-8::obj-97" : [ "textedit[15]", "textedit", 0 ],
 			"parameterbanks" : 			{
 
 			}
