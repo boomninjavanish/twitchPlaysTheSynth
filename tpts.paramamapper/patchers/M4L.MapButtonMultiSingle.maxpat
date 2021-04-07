@@ -1283,6 +1283,7 @@
 						"style" : "",
 						"subpatcher_template" : "",
 						"assistshowspatchername" : 0,
+						"visible" : 1,
 						"boxes" : [ 							{
 								"box" : 								{
 									"id" : "obj-24",
@@ -1302,8 +1303,8 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 174.0, 251.0, 132.0, 20.0 ],
-									"text" : "bgoncolor0.965 0. 0. 0.502"
+									"patching_rect" : [ 174.0, 251.0, 135.0, 20.0 ],
+									"text" : "bgoncolor 0.965 0. 0. 0.502"
 								}
 
 							}
@@ -7241,7 +7242,7 @@
 ,
 		"dependency_cache" : [ 			{
 				"name" : "stringFormat.js",
-				"bootpath" : "~/Documents/GitHub/twitchPlaysTheSynth/tpts.paramamapper/code",
+				"bootpath" : "~/OneDrive - Dunlap Media/GitHub/twitchPlaysTheSynth/tpts.paramamapper/code",
 				"patcherrelativepath" : "../code",
 				"type" : "TEXT",
 				"implicit" : 1

@@ -16,6 +16,9 @@ let isVerbose = true;
 // https://docs.cycling74.com/nodeformax/api/module-max-api.html
 const max = require('max-api');
 
+// https://github.com/rotemdan/lzutf8.js
+const compressor = require('lzutf8');
+
 // tell us the node version
 max.post(`Node version: ${process.version}`);
 
@@ -27,33 +30,238 @@ const tmi = require('tmi.js');
    /////////// classes /////////// 
 */
 
+// Named values are mapper parameters value numbers that correspond to a named string
+class NamedValue {
+    constructor(name = "", value = 0){
+        this.name = name;
+        this.value = value;
+    }
+}
+
+// A Mapper is a paramamapper mapper that maps parameters
+//  name: the mapper's name
+//  access: which level of user may adjust this mapper's value
+//  values: an array of named values (see class above)
+class Mapper {
+    constructor(name = "", access = "public"){
+            this.name = name; // the name of the mapper
+            this.access = access; // the access level of the mapper
+            this.values = []; 
+    }
+
+    // Fields:
+    // the value range for this mapper
+    valueRange = {
+        min: 0,
+        max: 100
+    }
+    
+    // Setters:
+    // set the named value names to the this.value array
+    // input: csValueNames: a comma separated string of value names
+    set valueNames(csValueNames){
+        if(csValueNames){
+            let nameArr = csValueNames.split(".");
+            let startedEmpty = this.values.length == 0;
+            let unequalLength = !(this.values.length == nameArr.length);
+
+            // reset the values array if the new one is different size
+            if(unequalLength) this.values = [];
+
+            for(let i in nameArr){            
+                // if there is a named value there, set the parsed names to the name field
+                if(this.values[i] instanceof NamedValue)
+                    this.values[i].name = nameArr[i];
+
+                // otherwise, make a new named value, set the name to the name
+                else
+                    this.values[i] = new NamedValue(nameArr[i]);            
+            }
+
+            if(startedEmpty || unequalLength) this.genValueValues();
+        }
+    }
+
+    // set the named value values to the this.value array
+    // input: csValueValues: a comma separated string of value name values
+    set valueValues(csValueValues){
+        // if no values are given, automaticaly generate them
+        if(!csValueValues) this.genValueValues();
+
+        // otherwise, split out and assign the values
+        else {
+            let numArr = csValueValues.split(".");
+                      
+            for(let i in numArr){
+                // if there is a named value there, set the number to the value
+                if(this.values[i] instanceof NamedValue) {
+                    let valueValue = parseFloat(numArr[i]);
+                    // if value is NaN, leave the generated value in place 
+                    if(!isNaN(valueValue))
+                        this.values[i].value = valueValue;
+                }
+                // otherwise, make a new named value and set the number to value
+                else
+                    this.values[i] = new NamedValue("", parseFloat(numArr[i]));                
+            }
+        }
+    }
+
+    // Getters:
+    // returns the named values names in an array 
+    get valueNames(){
+        let valueNames = [];
+
+        // if no value names present, return empty
+        // otherwise, give an array of named value names
+        if(!(this.values.length == 0)){
+            for(let index in this.values){
+                valueNames.push(this.values[index].name);
+            }
+        }
+        return valueNames;
+    }
+
+    // returns the named values values in an array
+    get valueValues(){
+        let valueNames = [];
+
+        // if no value names present, return empty
+        // otherwise, give an array of named value values
+        if(!(this.values.length == 0)){
+            for(let index in this.values){
+                valueNames.push(this.values[index].value);
+            }
+        }
+        return valueNames;
+    }
+
+    // returns the named values names in comma-separated list
+    get cvValueNames(){
+        return this.genCSV(this.valueNames);
+    }
+
+    // returns the named values values in comma-separated list
+    get cvValueValues(){
+        return this.genCSV(this.valueValues);
+    }
+
+    // Methods:
+    genCSV(valueArray){
+        let string = "";
+
+        // if no value names present, return undefined
+        // otherwise, give a comma separated value version of the array
+        if(!(valueArray.length == 0)){
+            for(let index in valueArray){
+                if(index == 0){ 
+                    string = `${valueArray[index]}`; 
+                } else { 
+                    string += `.${valueArray[index]}`; 
+                } 
+            }            
+        }
+
+        return string;
+    }
+
+    // generates the named value names automatically if there
+    //  named value names in this.values
+    genValueValues(){
+        let numNamedValues = this.values.length;
+
+        // exit silently if the array of values are empty
+        if(numNamedValues == 0) return;
+        
+        for(let index in this.values){
+            // calculate the middle of each value range
+            let mid = (parseFloat(index) + 1 / numNamedValues);
+            mid += (parseFloat(index) + 2 / numNamedValues);
+            mid /= 2;
+
+            // scale to the actual value 
+            let value = (this.valueRange.max * mid) / numNamedValues;
+            value = Math.round(value);
+
+            // set the value for the named value
+            this.values[index].value = value;
+        }
+        // output to paramamapper values text box as comma-separated values  
+        max.outlet(`/tpts/paramamapper ${this.name} valueValues ${this.cvValueValues}`);
+    }
+
+    // finds a name in the array of named values; returns the namedValue object
+    findNamedValueName(nameValueValue){
+        return this.values.find(object => object.value === nameValueValue);
+    }
+    
+    // finds a value in the array of named values; returns the namedValue object
+    findNamedValueValue(namedValueName){
+        return this.values.find(object => object.name === namedValueName);
+    }
+    
+}
+
 // Class that makes an array of paramamapper mappers.
-class Mapper extends Array {
+class Mappers extends Array {
     // Constructor:
     constructor(...items) {
         super(...items);    
     }
 
     // Methods:
-    // add a new mapper to the array
+    // find and return a mapper object within this array
+    findMapper(mapperName){
+        return this.find(object => object.name === mapperName);
+    }
+
+    // find and return a mapper index within this array
+    findMapperIndex(mapperName){
+        return this.findIndex(object => object.name === mapperName);
+    }
+
+    // parses string received from max that contains a mapper name
+    //  followed by a space, followed by a comma sepaated list of values
+    //  returns an object that contains this array's index, the comma-
+    //  separated values, and whether the mapper was found in this array
+    parseMaxCvData(maxData){
+        if(maxData){
+            // parse incoming data into elements
+            let dataArr = maxData.split(" ");
+
+            // find the element in the array
+            let indexToChange = this.findMapperIndex(dataArr[0]);
+            let csValues = dataArr[1];
+
+            if(indexToChange > -1 && csValues)
+                return { found: true, index: indexToChange, csValues: csValues };            
+        }
+        return { found: false, index: null, csValues: null };
+    }
+
+    // add a new mapper object to the array
     // maxData is a max list with: <name> <access>
-    add(maxData){
+    addMapper(maxData){
         // retrieve the data
         let dataArr = maxData.split(" ");
 
-        if(!this.find(object => object.name === dataArr[0])){
-            // make public if access not defined
-            if(!dataArr[1]){ dataArr[1] = "public"; }
-        
-            // add to this array
-            this.push({ name: dataArr[0], access: dataArr[1] });
+        if(dataArr[0]){
+            const mapper = new Mapper(); // mapper object to push into array
+            mapper.name = dataArr[0];
+            if(dataArr[1]) mapper.access = dataArr[1];
+            
+            // if the mapper doesn't exist, push it to the mappers array
+            if(!this.findMapper(mapper.name)){
+                // add to this array
+                this.push(mapper);
+            }
         }
     }
 
     // delete a mapper from the array by mapper name
-    delete(name){
+    deleteMapper(name){
         // find it
-        let indexToDelete = this.findIndex(object => object.name === name);
+        let indexToDelete = this.findMapperIndex(name);
 
         // if found, delete
         if(indexToDelete > -1)
@@ -62,26 +270,74 @@ class Mapper extends Array {
 
     // change the access level of a mapper
     // maxData is a max list with: <name> <accessLevel>
-    changeAccess(maxData){
+    changeMapperAccess(maxData){
         // parse incoming data into elements
         let dataArr = maxData.split(" ");
 
         // find the element in the array
-        let indexToChange = this.findIndex(object => object.name === dataArr[0]);
+        let indexToChange = this.findMapperIndex(dataArr[0]);
 
         if(indexToChange > -1){
             // make public if access not defined
             if(!dataArr[1]){ dataArr[1] = "public"; }
 
             // change access level
-            this[indexToChange] = { name: dataArr[0], access: dataArr[1] };
+            this[indexToChange].access = dataArr[1];
         }
+    }
+
+    // add named value names to a mapper
+    // input: a string that contains the mapper name followed by a space followed by 
+    //  a comma separated list of named value names: "<mapperName> <csNames>"
+    addMapperValueNames(maxData){
+        max.post(`maxData: ${maxData}`);
+        let parsedData = this.parseMaxCvData(maxData);
+
+        if(parsedData.found) this[parsedData.index].valueNames = parsedData.csValues;   
+    }
+
+    // add named value values to a mapper
+    // input: a string that contains the mapper name followed by a space followed by 
+    //  a comma separated list of named value values: "<mapperName> <csValues>"
+    addMapperValueValues(maxData){
+        let parsedData = this.parseMaxCvData(maxData);
+        
+        if(parsedData.found) this[parsedData.index].valueValues = parsedData.csValues;
     }
 }
 
 /*
    /////////// functions /////////// 
 */
+
+const connectToTwitch = function (){    
+    // fill in the client connection settings
+    client.username = twitchApiOptions.identity.username;
+    client.password = twitchApiOptions.identity.password;
+    client.channels = twitchApiOptions.channels;
+
+    // connect bot to twitch
+    client.connect()
+        .then((data) => {
+            max.outlet(`/tpts/twitchBot/messageOut 'Connected to ${data}'`);
+        })
+        .catch((err) => {
+            max.outlet(`/tpts/twitchBot/messageOut 'Error connecting to Twitch: ${err}'`);
+            max.outlet("twitchBangDisconnectError bang");
+        });
+}
+
+const disconnectFromTwitch = function (){
+    // connect bot to twitch
+    client.disconnect()
+    .then((data) => {
+        max.post(`Disconnected from Twitch via ${data[0]}:${data[1]}`);
+        max.outlet("/tpts/twitchBot/messageOut 'Disconnected from Twitch'");
+    }).catch((err) => {
+        max.post(`Error disconnecting from Twitch: "${err}"`);
+    });
+    max.outlet("/tpts/twitchBot/messageOut 'Disconnected from Twitch'");
+}
 
 const parse = function (
     inputMessage, 
@@ -94,8 +350,8 @@ const parse = function (
 ) {
     // find which message is being parsed
     let outputMessage = []; // the Max formatted output
-    let typeRegex = /^![A-Za-z0-9-]+/; // the inputKey with exclamation point (include all letters, numbers, and hyphens)
-    let melodyRegex = /^!m\b|^!m\d+\b/;
+    let typeRegex = /^![A-Za-z0-9-]+|!%/; // the inputKey with exclamation point (include all letters, numbers, and hyphens)
+    let melodyRegex = /^!m\b|^!m\d+\b|^!%/;
     let matches = inputMessage.match(typeRegex); // get the inputKey from the message
     let noAhhh = ""; // input key with out the AHHHH!!! (exclamation point)
 
@@ -103,12 +359,23 @@ const parse = function (
     if(matches){ 
         noAhhh = matches[0].slice(1); // strip the exclamation point from the key for paramamapper messages
         let mapperIndex = mappers.findIndex(object => object.name === noAhhh); // get the index value of mapper name
+        let melodyIndicator = matches[0].match(melodyRegex);
 
         // parse melody if '!m'; everything else is considered to be paramamapper or error
-        if(matches[0].match(melodyRegex))
+        if(melodyIndicator){
+            // non compressed melody
+            if(noAhhh === "%"){
+                let theCompressedMelody = inputMessage.slice(2);
+                
+                // decompress melody before parsing
+                let theExpandedMelody = compressor.decompress(theCompressedMelody, {inputEncoding: "StorageBinaryString"});
+                inputMessage = `!m${theExpandedMelody}`;
+                if(isVerbose) max.post(`Decompressed melody: ${inputMessage}`);
+            } 
+            // parse melody
             outputMessage = parseMelody(inputMessage, tonalCenter, midiNumberMin, midiNumberMax, midiNumberTrimType);
-
-        else if(mapperIndex > -1){ // <---------////////////
+        
+        } else if(mapperIndex > -1){ // if not a melody, then it must be a paramamapper    
             // restrict command parsing to different tiers based on mapper[x].access value
             // assign a user and the mapper a level score 
             let levels = [
@@ -125,7 +392,7 @@ const parse = function (
             // compare the scores to give tiered access
             if(userScore >= mapperScore){
                 // parse mapper command
-                outputMessage = parseTwoParameters(inputMessage, matches[0], `/tpts/paramamapper ${noAhhh}`);
+                outputMessage = parseMapper(inputMessage, matches[0], `/tpts/paramamapper ${noAhhh}`);
                 return outputMessage;
             } else {
                 // access denied!
@@ -188,7 +455,7 @@ const extractValues = function (inputMessage){
     let stripRegex = /^![a-zA-Z]+\d+/;
 
     // used to find the value before the brackets []
-    let valueRegex = /\s([+-]?(\.)?\d+(\.\d+)?)/g; 
+    let valueRegex = /\s([+-]?(\.)?\d+(\.\d+)?)|\s(\w+)/g; 
 
     // used to find the value inside the brackets or parentheses
     let beatsRegex = /(\[|\()([+-]?\d+(\.\d+)?)(\]|\))/g; 
@@ -248,11 +515,17 @@ const extractValues = function (inputMessage){
     if(valueMatches && beatsMatchesChecked){
         // return with error if number of matches in arrays are not equal
         if(valueMatches.length === beatsMatchesChecked.length){
-            // remove the spaces from the values
-            for(let i in valueMatches)
-                valueMatches[i] = parseFloat(
-                    valueMatches[i].replace(/^\s/, "")
-                    );
+            for(let i in valueMatches){
+                // remove the spaces from the values
+                let value = valueMatches[i].replace(/^\s/, "");
+                
+                // if it is a number, parse as a float
+                if(value.match(/^[+-]?\d+[.]?[\d+]?/g)){
+                    valueMatches[i] = parseFloat(value);
+                } else {
+                    valueMatches[i] = value;
+                }
+            }
                     
             // remove the brackets from the beats
             for(let i in beatsMatchesChecked){
@@ -284,18 +557,18 @@ const extractValues = function (inputMessage){
 }
 
 /*
- parse two parameters - parses a input key followed by two numeric parameters; one for the amount of change
+ parse mapper commands - parses a input key followed by two numeric parameters; one for the amount of change
     the other for the duration in beats for the change to glide towards in a linear ramp
 
     input message format:
-        "<inputKey> <amount>-<beats> "
+        "<inputKey> <amount>[<beats>] "
             <inputKey>  = the key that the user enters to indicate a specific command
             <amount>    = the amount change requested by the user
             <beats>     = beats; how many quarter notes to for the change to take place; 0 = immediately
 
         Example (change the resonance knob to 64 over 8 beats):
 
-            "!r 64-8"
+            "!r 64[8]"
 
     inputKey:
         the key that designates the command to be performed (example: "!z"); this parameter is used for
@@ -315,22 +588,38 @@ const extractValues = function (inputMessage){
     returns:
         single output message in an array
 */
-const parseTwoParameters = function (inputMessage, inputKey, outputKey, min = 0, max = 100){
+const parseMapper = function (inputMessage, inputKey, outputKey, min = 0, max = 100){
     let outputMessage = []; // the Max formatted output array
     let median = parseInt((min + max) / 2); // used to communicate range errors
+    let mapper = mappers.findMapper(inputKey.slice(1)); // return a mapper object that matches the input key (w/out an '!')
 
     // get the values for the param
     let extractedValues = extractValues(inputMessage);
 
     if(extractedValues.error === "none"){
+        //////////// <--- TODO: transform the following if else statements into a loop that iterates over the .val array;
+        ///////////             this will allow for multi-automations; requires a queue for mapper commands 
+        ///////////             (equivalent to a [ coll ] object in Max)
+        // check for named value and get the potential mapper value
+        let value = extractedValues.val[0]
+        let namedValue = mapper.findNamedValueValue(value);
+
+        // if value is named value, then convert named value into real value
+        if(namedValue instanceof NamedValue){
+            value = namedValue.value;
+        }
+
+        // set the current number beats that we will send to command
+        let beats = extractedValues.beats[0]; 
+
         // send the parsed the values and beats if no error
-        if(extractedValues.val[0] >= min && extractedValues.val[0] <= max){ // test if val is in range
-            if(extractedValues.beats[0] >= 0){ // test if beats are in range
-                outputMessage.push(`${outputKey} ${extractedValues.val[0]} ${extractedValues.beats[0]}`);
+        if(value >= min && value <= max){ // test if val is in range
+            if(beats >= 0){ // test if beats are in range
+                outputMessage.push(`${outputKey} ${value} ${beats}`);
             } else {
                 // syntax error and quit
                 outputMessage.push(`/tpts/twitchBot/errorMessage 
-                'The value of ${extractedValues.beats[0]} is out of range. The value must be greater than
+                'The value of ${beats} is out of range. The value must be greater than
                 or equal to zero. --
                 Your command: ${inputMessage} --
                 An example of a correct command: !${extractedValues.identifier} ${median}[4]'`);
@@ -340,7 +629,7 @@ const parseTwoParameters = function (inputMessage, inputKey, outputKey, min = 0,
         } else {
             // syntax error and quit
             outputMessage.push(`/tpts/twitchBot/errorMessage 
-                'The value of ${extractedValues.val[0]} is out of range. The value must be between
+                'The value of ${value} is out of range. The value must be between
                 ${min} and ${max}. --
                 Your command: ${inputMessage} --
                 An example of a correct command: !${extractedValues.identifier} ${median}[4]'`);
@@ -502,8 +791,8 @@ const twitchApiOptions = {
 };
 
 // for making mappers in paramamapper
-// each mapper name in the array has the following elements: name & access
-const mappers = new Mapper();
+// each mapper name in the array has the following elements: name, access, and values
+const mappers = new Mappers();
 
 // for keeping within midi pitch number range
 let midiNumberMin = 20;
@@ -553,9 +842,14 @@ function onMessageHandler (channel, userstate, msg, self) {
                 // user is sub
                 if(isVerbose) max.post(`${userstate.username} is a subscriber!`);
                 userAccessLevel = "sub";
+            } else {
+                // user has badges, but none meet the requirements
+                if(isVerbose) max.post(`${userstate.username} is a pleeb!`);
+                userAccessLevel = "public";
             }
             
         } else {
+            // user has no badges at all
             if(isVerbose) max.post(`${userstate.username} is a pleeb!`);
             userAccessLevel = "public";
         }
@@ -624,35 +918,10 @@ function onPartHandler (channel, username, self) {
 */
 
 // parse message to connect to Twitch (message === "twitchConnect")
-max.addHandler("twitchConnect", () => {
-    // fill in the client connection settings
-    client.username = twitchApiOptions.identity.username;
-    client.password = twitchApiOptions.identity.password;
-    client.channels = twitchApiOptions.channels;
-
-    // connect bot to twitch
-    client.connect()
-        .then((data) => {
-            max.outlet(`/tpts/twitchBot/messageOut 'Connected to ${data}'`);
-        })
-        .catch((err) => {
-            max.outlet(`/tpts/twitchBot/messageOut 'Error connecting to Twitch: ${err}'`);
-            max.outlet("twitchBangDisconnectError bang");
-        });
-});
+max.addHandler("twitchConnect", connectToTwitch);
 
 // parse message to disconnect from Twitch api ("twitchDisconnect")
-max.addHandler("twitchDisconnect", () => {
-    // connect bot to twitch
-    client.disconnect()
-    .then((data) => {
-        max.post(`Disconnected from Twitch via ${data[0]}:${data[1]}`);
-        max.outlet("/tpts/twitchBot/messageOut 'Disconnected from Twitch'");
-    }).catch((err) => {
-        max.post(`Error disconnecting from Twitch: "${err}"`);
-    });
-    max.outlet("/tpts/twitchBot/messageOut 'Disconnected from Twitch'");
-});
+max.addHandler("twitchDisconnect", disconnectFromTwitch);
 
 // parse twitch api access settings (prepended with twitchSettings)
 max.addHandler("twitchSettings", (inputMessage) => {
@@ -695,29 +964,33 @@ max.addHandler("twitchSettings", (inputMessage) => {
     }
 });
 
-
-// parse messages sent from the inlet (for testing commands)
-max.addHandler("input", (inputMessage) => {
-    // parse through command parser if prepended with "input"
-    let outputMessage = parse(inputMessage);
-
-    // output all parsed Max messages in returned array
-    for(let line of outputMessage){
-        max.outlet(line);
-    }
-});
-
 // register new mapper names
+// data = <mapper> <access>
 max.addHandler("mapperName", (data) => {
-    mappers.add(data);
+    mappers.addMapper(data);
 });
 
 // delete mapper names
+// mapperName = name of mapper to delete
 max.addHandler("deleteMapperName", (mapperName) => {
-   mappers.delete(mapperName);
+   mappers.deleteMapper(mapperName);
 });
 
 // changes the access level of a mapper name
+// data = <mapper> <access>
 max.addHandler("changeMapperAccess", (data) => {
-    mappers.changeAccess(data);
+    mappers.changeMapperAccess(data);
 });
+
+// add mapper value names to a mapper
+// data = <mapperName> <name,name,name...>
+max.addHandler("addMapperValueNames", (data) => {
+    max.outlet(mappers.addMapperValueNames(data));
+});
+
+// add mapper value values to a mapper
+// data = <mapperName> <value,value,value...>
+max.addHandler("addMapperValueValues", (data) => {
+    mappers.addMapperValueValues(data);
+});
+
