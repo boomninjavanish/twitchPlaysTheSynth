@@ -102,7 +102,7 @@ class Mapper {
                 }
                 // otherwise, make a new named value and set the number to value
                 else
-                    this.values[i] = new NamedValue("", parseFloat(numArr[i]));                
+                    this.values[i] = new NamedValue("", parseInt(numArr[i]));                
             }
         }
     }
@@ -368,7 +368,7 @@ const parse = function (
                 let theCompressedMelody = inputMessage.slice(2);
                 
                 // decompress melody before parsing
-                let theExpandedMelody = compressor.decompress(theCompressedMelody, {inputEncoding: "StorageBinaryString"});
+                let theExpandedMelody = compressor.decompress(theCompressedMelody, {inputEncoding: "Base64"});
                 inputMessage = `!m${theExpandedMelody}`;
                 if(isVerbose) max.post(`Decompressed melody: ${inputMessage}`);
             } 
@@ -615,6 +615,7 @@ const parseMapper = function (inputMessage, inputKey, outputKey, min = 0, max = 
         // send the parsed the values and beats if no error
         if(value >= min && value <= max){ // test if val is in range
             if(beats >= 0){ // test if beats are in range
+                if(beats < 1) beats = 1; // force beats to be a minimum of 1 beat
                 outputMessage.push(`${outputKey} ${value} ${beats}`);
             } else {
                 // syntax error and quit
