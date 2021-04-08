@@ -350,8 +350,10 @@ const parse = function (
 ) {
     // find which message is being parsed
     let outputMessage = []; // the Max formatted output
-    let typeRegex = /^![A-Za-z0-9-]+|!%/; // the inputKey with exclamation point (include all letters, numbers, and hyphens)
-    let melodyRegex = /^!m\b|^!m\d+\b|^!%/;
+    //let typeRegex = /^![A-Za-z0-9-]+|!%/; // the inputKey with exclamation point (include all letters, numbers, and hyphens)
+    let typeRegex = /^![A-Za-z0-9-]+/; // the inputKey with exclamation point (include all letters, numbers, and hyphens)
+    //let melodyRegex = /^!m\b|^!m\d+\b|^!%/;
+    let melodyRegex = /^!m\b|^!m\d+\b/;
     let matches = inputMessage.match(typeRegex); // get the inputKey from the message
     let noAhhh = ""; // input key with out the AHHHH!!! (exclamation point)
 
@@ -363,6 +365,10 @@ const parse = function (
 
         // parse melody if '!m'; everything else is considered to be paramamapper or error
         if(melodyIndicator){
+            
+            /* !!!!!! crashes in Max for Live environment            !!!!!!
+               !!!!!! will be implemented when moved to VUE/Electron !!!!!!
+
             // non compressed melody
             if(noAhhh === "%"){
                 let theCompressedMelody = inputMessage.slice(2);
@@ -372,6 +378,8 @@ const parse = function (
                 inputMessage = `!m${theExpandedMelody}`;
                 if(isVerbose) max.post(`Decompressed melody: ${inputMessage}`);
             } 
+            
+            */ 
             // parse melody
             outputMessage = parseMelody(inputMessage, tonalCenter, midiNumberMin, midiNumberMax, midiNumberTrimType);
         

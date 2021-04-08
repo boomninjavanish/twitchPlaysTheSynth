@@ -1,5 +1,7 @@
 # !tpts Change Log
 
+[Click here to view the full change log.](https://github.com/boomninjavanish/twitchPlaysTheSynth/blob/main/CHANGELOG.md)
+
 ## v0.1 (pre-release) (2021-2-21)
 - This is the first release of the twitch plays the synth Max for Live Devices. Each devices is self contained and doesn't require any external files.
 - Connected !f, !r, !s, and !y to mappers
@@ -95,12 +97,13 @@
     - resolves #57; resolves #60
 - [bug] users that had badges but were not subscribers, mods, or the broadcaster would be denied public access to mappers; resolves #68
 
-
 *[bug/knownissue] the top value names fields in the GUI does not send information to the main app; this will be fixed in v1.2.1
 
 ## v1.2.1 (2021-4-7)
 - [bug] mapped parameters beats that are entered by the user are defaulted to 1 for any value < 1 
 - [bug] named values would not allow for a '#' to be parsed; added the following characters: "#@$%^&*"
 - [bug] switched to Base64 encoding for compressed melodies as some characters may have been causing a crash in the tpts.main
-- [bug]  the previous version stated "the top value names fields in the GUI does not send information to the main app; this will be fixed in v1.2.1"; it was found that the developer's version of Ableton Live 10 was causing the issue. Switching to a fresh version Ableton Live 11 trial showed that the feature was working correctly.
+- [bug] the previous version stated "the top value names fields in the GUI does not send information to the main app; this will be fixed in v1.2.1"; it was found that the developer's version of Ableton Live 10 was causing the issue. Switching to a fresh version Ableton Live 11 trial showed that the feature was working correctly.
 
+## v1.2.2 (2021-4-8)
+- [bug] disabled the ability to receive compressed melodies; will be implemented in a later revision
