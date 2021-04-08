@@ -455,7 +455,7 @@ const extractValues = function (inputMessage){
     let stripRegex = /^![a-zA-Z]+\d+/;
 
     // used to find the value before the brackets []
-    let valueRegex = /\s([+-]?(\.)?\d+(\.\d+)?)|\s(\w+)/g; 
+    let valueRegex = /\s([+-]?(\.)?\d+(\.\d+)?)|\s[\w#@$%^&\*]+/g; 
 
     // used to find the value inside the brackets or parentheses
     let beatsRegex = /(\[|\()([+-]?\d+(\.\d+)?)(\]|\))/g; 
