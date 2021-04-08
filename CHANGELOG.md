@@ -100,6 +100,7 @@
 
 ## v1.2.1 (2021-4-7)
 - [bug] mapped parameters beats that are entered by the user are defaulted to 1 for any value < 1 
+- [bug] named values would not allow for a '#' to be parsed; added the following characters: "#@$%^&*"
 - [bug] switched to Base64 encoding for compressed melodies as some characters may have been causing a crash in the tpts.main
 - [bug]  the previous version stated "the top value names fields in the GUI does not send information to the main app; this will be fixed in v1.2.1"; it was found that the developer's version of Ableton Live 10 was causing the issue. Switching to a fresh version Ableton Live 11 trial showed that the feature was working correctly.
 
