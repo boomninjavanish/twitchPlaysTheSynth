@@ -107,3 +107,12 @@
 
 ## v1.2.2 (2021-4-8)
 - [bug] disabled the ability to receive compressed melodies; will be implemented in a later revision
+
+# In Progress:
+
+## v2.0 (2021-4-x)
+- Version 2 is a complete switch to using a virtual MIDI device to interface with any DAW or instrument via Twitch. 
+- This is a complete rewrite of the sequencers and mappers that were once Max for Live devices.
+- The project will start as a command-line node-based application and then grow into a Vue/electron application; this will be accomplished through the use of independent JSON files that contains all of the relevant settings for the application. These files can be edited through a text editor for the command-line version and will later serve as the basis for a way to save/load all of the values in the Vue/electron version.
+- The app uses the midi library that is available through npm; this lib is a simple wrapper for RtMidi which, as the name implies, is a real-time midi lib that is compiled in C++.
+- 
