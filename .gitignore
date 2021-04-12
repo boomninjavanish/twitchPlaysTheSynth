@@ -8,6 +8,7 @@
 ##################################
 creds.js
 .code-workspace
+src/scratchPad.js
 
 ##################################
 #   OS junk

@@ -1,6 +1,6 @@
 const midi = require('midi');
-const MidiMessages = require('./midiMessages.js');
-const Transport = require('./music');
+const MidiMessages = require('./classes.js');
+const Transport = require('./classes.js');
 
 // setup the virtual midi input and output devices
 const input = new midi.input();
@@ -47,7 +47,7 @@ const looper = function(){
             output.sendMessage(midiMessages.start);
             transport.isStopped = false;
         }
-        output.sendMessage(midiMessages.clockPulse;
+        output.sendMessage(midiMessages.clockPulse);
     }
 }
 
@@ -59,3 +59,10 @@ process.on('message', async (message) => {
     if(message.transport) message.transport = transport;
     if(message.settings) message.settings = settings;
 });
+
+// TODO: close both ports upon leaving the app
+/*
+// do before exiting thread
+vMidiInput.closePort();
+vMidiOutput.closePort();
+ */
