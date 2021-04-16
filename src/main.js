@@ -1,64 +1,57 @@
-const { fork } = require('child_process');
-const Transport = require('./classes.js');
-const fileSystem = require('fs');
-const homeDirectory = require('os').homedir();
-
-/*
-    ////////  Global Vars /////////
-*/
-const saveDirectory = `${homeDirectory}/tpts`;
-const settingsFile = `${saveDirectory}/settings.json`;
-
-
 // the following vars will act as the app's model
-// when the main loop receives data, it will store it in the following
-let transport = new Transport();
+// when the main loop receives data, it will process it then
+//  send it along to another module
 
-/*
-    ////////  Settings Var /////////
-*/
-let settings = {
-    // sets the virtual midi input/output devices name
-    vMidiBaseName: "!tpts"
+// includes:
+const { fork } = require('child_process');
+const Settings = require('./classes').Settings;
+
+// vars:
+let readyToExit = false;
+let settings = new Settings();
+let transportInfo = {
+    ticks: 0,
+    beat: 0,
+    bar: 0
 }
 
-let message = "bang";
-
-/*
-    ///////// Do Once ///////////
- */
-// check for settings file
-try {
-    // check for settings file; if not exist write one
-    if(!fileSystem.existsSync(settingsFile)){
-        fileSystem.mkdirSync(saveDirectory);
-        const data = fileSystem.writeFileSync(settingsFile, settings);
-        console.log(data);
-    } else { // if exists, load file
-        settings = fileSystem.readFileSync(settingsFile, "utf8");
-    }
-} catch (err) {
-    console.error(err);
-}
-fileSystem.access()
-
+// forks:
 // start the forked loops
 const transportLoop = fork('./transportLoop.js');
-const midiLoop = fork('./midiLoop.js');
+const viewLoop = fork('./viewLoop.js');
 
-/*
-    ///////// Message Routing ///////////
- */
-// send the settings to the forks
-midiLoop.send({ settings: settings });
+// message routing:
+// transmitters
+transportLoop.send({
+    baseName: settings.baseName,
+    usingInternalClock: settings.usingInternalClock,
+});
 
 // receivers
 transportLoop.on('message', (message) => {
-    // save transport to local var
-    transport = message.transport;
+    if(message.ticks) transportInfo.ticks = message.ticks;
+    if(message.beat) transportInfo.beat = message.beat;
+    if(message.bar) transportInfo.bar = message.bar;
 
-    // send the transport to the midiLoop
-    midiLoop.send({ transport: transport });
+    // send to viewer
+    viewLoop.send({
+       ticks: message.ticks,
+       beat: message.beat,
+       bar: message.bar
+    });
+
+    // ready to exit
+    if(message.exit){
+        readyToExit = true;
+    }
 });
 
-
+viewLoop.on('message', (message) => {
+    // if the user exits, shut everything down
+    if(message.exit){
+        // close the transport's midi ports
+        transportLoop.send({exit: true});
+        //while(!readyToExit){}; // wait until all things have shutdown
+        process.exit(0);
+    }
+});
