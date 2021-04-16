@@ -8,10 +8,11 @@ const MidiMessages = require('./classes.js').MidiMessages;
 let transport = new Transport();
 let midiMessages = new MidiMessages();
 let timeThen = microtime.now();
+let isStopped = true;
 
 // store any settings incoming from main
 let settings = {
-    baseName: "name",
+    baseName: "",
     usingInternalClock: false,
 };
 
@@ -19,13 +20,6 @@ let settings = {
 // setup the virtual midi input and output devices
 const midiClockInput = new midi.input();
 const midiClockOutput = new midi.output();
-
-// open the virtual midi ports
-midiClockInput.openVirtualPort(`${settings.baseName} Clock Input`);
-midiClockOutput.openVirtualPort(`${settings.baseName} Clock Input`);
-
-// setup the midi input to listen to the clock signal
-midiClockInput.ignoreTypes(true, false, true);
 
 // functions:
 async function messageHandler(messageIn){
@@ -36,20 +30,20 @@ async function messageHandler(messageIn){
 midiClockInput.on('message', (deltaTime, message) => {
     switch(message[0]){
         case midiMessages.timingClock:
-            if(!settings.usingInternalClock){
+            if(!settings.usingInternalClock && !isStopped){
                 // send a tick to the transport
                 transport.tick();
             }
             break;
 
         case midiMessages.stop:
-            console.log("<<<<<< STOPPED >>>>>>");
-            // TODO: stop transport
+            // stop the transport when receiving
+            isStopped = true;
             break;
 
         case midiMessages.start:
-            console.log("<<<<<< STARTED >>>>>>")
-            // TODO: start transport
+            // start the transport when receiving
+            isStopped = false;
             break;
 
         case midiMessages.songPositionPointer:
@@ -71,13 +65,17 @@ const looper = function(){
         let timeDelta = timeNow - timeThen;
         let timeDeltaMillis = timeDelta * 0.001;
 
-        // --->**((( [ > tick < ] )))**<---
-        if (timeDeltaMillis >= transport.ticksPerMillis) {
-            // move the transport one tick
-            transport.tick();
+        if(!isStopped) {
+            // --->**((( [ > tick < ] )))**<---
+            if (timeDeltaMillis >= transport.ticksPerMillis) {
+                // move the transport one tick
+                transport.tick();
 
-            // set the clock for next tick interval
-            timeThen = timeNow;
+                // set the clock for next tick interval
+                timeThen = timeNow;
+            } else {
+                midiClockOutput.sendMessage([midiMessages.timingClock, 0, 0]);
+            }
         }
     }
 
@@ -95,9 +93,19 @@ setInterval(looper, transport.ticksPerMillis/2);
 // deal with messages from main thread:
 process.on('message', async (message) => {
     //output = await messageHandler(count);
+    // get the settings, then start the virtual midi interfaces
     if(message.usingInternalClock){
-        settings.baseName = message.baseName;
         settings.usingInternalClock = message.usingInternalClock;
+    }
+    if(message.baseName){
+        settings.baseName = message.baseName;
+
+        // open the virtual midi ports
+        midiClockInput.openVirtualPort(`${settings.baseName} Clock Input`);
+        midiClockOutput.openVirtualPort(`${settings.baseName} Clock Input`);
+
+        // setup the midi input to listen to the clock signal
+        midiClockInput.ignoreTypes(true, false, true);
     }
     // close all ports; then tell the main app we are ready
     if(message.exit){

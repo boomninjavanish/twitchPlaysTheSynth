@@ -19,11 +19,11 @@ class Transport{
     isPaused = false;
     tickNow = false;    // do we create or respond to a tick right now?
     timeSignature = {
-        measureLength:  6,   // beats per bar
-        subdivision:    8    // the sub-division quantifier (ex: 4 = quarter note)
+        measureLength:  4,   // beats per bar
+        subdivision:    4    // the sub-division quantifier (ex: 4 = quarter note)
     };
 
-    // Setters:
+    // Setters:4
 
 
     // Getters:
